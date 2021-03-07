@@ -3,7 +3,6 @@
 ```
 Credits:
  - Mat (Client Base)
- - Brownie
 ```
 
 # Setting Up
