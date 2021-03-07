@@ -36,7 +36,8 @@ public class PluginsCommand extends Command {
             for (String command : commands) {
                 String pluginName = command.split(":")[0].substring(1);
 
-                if (!message.toString().contains(pluginName) && command.contains(":") && !pluginName.equalsIgnoreCase("minecraft") && !pluginName.equalsIgnoreCase("bukkit")) {
+                if (!message.toString().contains(pluginName) && command.contains(":")
+                        && !pluginName.equalsIgnoreCase("minecraft") && !pluginName.equalsIgnoreCase("bukkit")) {
                     size++;
                     if (message.length() == 0) {
                         message.append(pluginName);
