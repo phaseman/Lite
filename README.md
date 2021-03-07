@@ -3,6 +3,7 @@
 ```
 Credits:
  - Mat (Client Base)
+ - Brownie
 ```
 
 # Setting Up
@@ -28,3 +29,4 @@ Windows: -Djava.library.path=versions\1.8.8\1.8.8-natives-win
 Mac: -Djava.library.path=versions\1.8.8\1.8.8-natives-mac
 Linux: -Djava.library.path=versionss\1.8.8s\1.8.8-natives-linux
 ```
+
