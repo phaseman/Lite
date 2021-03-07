@@ -1,4 +1,11 @@
-# Creating a Run/Debug Configuration
+
+#Lite Client V2
+```
+Credits:
+ - Mat (Client Base)
+```
+
+# Setting Up
 * Main Class
 ```
 net.minecraft.Start
