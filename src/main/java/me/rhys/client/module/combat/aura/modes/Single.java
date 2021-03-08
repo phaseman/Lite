@@ -51,6 +51,7 @@ public class Single extends ModuleMode<Aura> {
         if (this.attackTimer.hasReached(1000L / aps)) {
             this.attackTimer.reset();
             mc.thePlayer.swingItem();
+            parent.doCritical();
             mc.thePlayer.sendQueue.addToSendQueue(new C02PacketUseEntity(target, C02PacketUseEntity.Action.ATTACK));
         }
     }

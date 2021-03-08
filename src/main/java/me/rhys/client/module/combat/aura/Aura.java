@@ -9,6 +9,7 @@ import me.rhys.base.module.data.Category;
 import me.rhys.base.module.setting.manifest.Clamp;
 import me.rhys.base.module.setting.manifest.Name;
 import me.rhys.client.module.combat.aura.modes.Single;
+import me.rhys.client.module.combat.criticals.Criticals;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityArmorStand;
@@ -45,6 +46,16 @@ public class Aura extends Module {
     @Name("LockView")
     public boolean lockView = false;
 
+    @Name("Crack")
+    public boolean crack = false;
+
+    @Name("Crack Type")
+    public CrackType crackType = CrackType.NORMAL;
+
+    @Name("Crack Size")
+    @Clamp(min = 1, max = 20)
+    public int crackSize = 4;
+
     public EntityLivingBase target;
 
     @Override
@@ -65,10 +76,7 @@ public class Aura extends Module {
         }
     }
 
-
-
     public EntityLivingBase findTarget() {
-
         for (Entity entity : mc.theWorld.loadedEntityList) {
             if (entity != null) {
                 if (!this.isEntityValid(entity)) continue;
@@ -76,7 +84,6 @@ public class Aura extends Module {
                 return (EntityLivingBase) entity;
             }
         }
-
         return null;
     }
 
@@ -106,5 +113,30 @@ public class Aura extends Module {
             return false;
 
         return monsters || entity instanceof EntityPlayer;
+    }
+
+    public void doCritical() {
+        Criticals criticals = (Criticals) Lite.MODULE_FACTORY.findByClass(Criticals.class);
+
+        if (criticals.getData().isEnabled()) {
+            criticals.processCriticalHit();
+        }
+
+        if (this.crack) {
+            for (int i = 0; i < this.crackSize; i++) {
+                if (this.crackType == CrackType.NORMAL) {
+                    mc.thePlayer.onCriticalHit(this.target);
+                }
+
+                if (this.crackType == CrackType.ENCHANT) {
+                    mc.thePlayer.onEnchantmentCritical(this.target);
+                }
+            }
+        }
+    }
+
+    public enum CrackType {
+        ENCHANT,
+        NORMAL
     }
 }

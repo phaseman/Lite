@@ -15,6 +15,10 @@
 
     <repositories>
         <repository>
+            <id>funkemunky-releases</id>
+            <url>https://nexus.funkemunky.cc/content/repositories/releases/</url>
+        </repository>
+        <repository>
             <id>strezz</id>
             <url>https://github.com/Strezzed/strezz-central/raw/repository/</url>
         </repository>
@@ -187,6 +191,26 @@
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <version>LATEST</version>
+        </dependency>
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>ViaSnakeYaml</artifactId>
+            <version>1.27</version>
+        </dependency>
+        <dependency>
+            <groupId>de.gerrygames</groupId>
+            <artifactId>ViaRewind</artifactId>
+            <version>1.5.3</version>
+        </dependency>
+        <dependency>
+            <groupId>nl.matsv</groupId>
+            <artifactId>ViaBackwards</artifactId>
+            <version>3.3.0-20w45a</version>
+        </dependency>
+        <dependency>
+            <groupId>us.myles</groupId>
+            <artifactId>ViaVersion</artifactId>
+            <version>3.3.0-20w45a</version>
         </dependency>
     </dependencies>
 </project>

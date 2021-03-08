@@ -9,6 +9,7 @@ import me.rhys.base.module.data.Category;
 import me.rhys.client.command.*;
 import me.rhys.client.files.AccountsFile;
 import me.rhys.client.module.combat.aura.Aura;
+import me.rhys.client.module.combat.criticals.Criticals;
 import me.rhys.client.module.combat.velocity.Velocity;
 import me.rhys.client.module.ghost.Reach;
 import me.rhys.client.module.ghost.autoclicker.AutoClicker;
@@ -59,6 +60,7 @@ public class Manager {
         event.register(
                 new Aura("Aura", "Attacks players for you", Category.COMBAT, Keyboard.KEY_NONE),
                 new Velocity("Velocity", "Control your velocity", Category.COMBAT, Keyboard.KEY_NONE),
+                new Criticals("Criticals", "Force Critical attacks", Category.COMBAT, Keyboard.KEY_NONE),
 
                 new Sprint("Sprint", "Sprints for you", Category.MOVEMENT, Keyboard.KEY_NONE),
                 new Fly("Fly", "Fly like a faggot", Category.MOVEMENT, Keyboard.KEY_NONE),
