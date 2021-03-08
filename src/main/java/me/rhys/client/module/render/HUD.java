@@ -60,9 +60,6 @@ public class HUD extends Module {
     @Clamp(min = 0, max = 300)
     public int scoreboardY = 75;
 
-    @Name("Nigger")
-    public boolean nigger = true;
-
     public int rCopy = r, gCopy = g, bCopy = b;
     private boolean rBack, gBack, bBack;
     private long lastR, lastG, lastB, nextRandomR, nextRandomG, nextRandomB;
