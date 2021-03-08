@@ -1,5 +1,7 @@
 package net.minecraft.client.gui;
 
+import com.github.creeper123123321.viafabric.ViaFabric;
+import com.github.creeper123123321.viafabric.util.ProtocolUtils;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 
@@ -15,6 +17,7 @@ import net.minecraft.client.resources.I18n;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Keyboard;
+import viamcp.gui.GuiProtocolSelector;
 
 public class GuiMultiplayer extends GuiScreen implements GuiYesNoCallback {
     private static final Logger logger = LogManager.getLogger();
@@ -88,6 +91,7 @@ public class GuiMultiplayer extends GuiScreen implements GuiYesNoCallback {
         this.buttonList.add(new GuiButton(4, this.width / 2 - 50, this.height - 52, 100, 20, I18n.format("selectServer.direct", new Object[0])));
         this.buttonList.add(new GuiButton(3, this.width / 2 + 4 + 50, this.height - 52, 100, 20, I18n.format("selectServer.add", new Object[0])));
         this.buttonList.add(new GuiButton(8, this.width / 2 + 4, this.height - 28, 70, 20, I18n.format("selectServer.refresh", new Object[0])));
+        this.buttonList.add(new GuiButton(9, this.width / 2 + 4 + 50, 10, 100, 20, "Protocol: " + ProtocolUtils.getProtocolName(ViaFabric.clientSideVersion)));
         this.buttonList.add(new GuiButton(0, this.width / 2 + 4 + 76, this.height - 28, 75, 20, I18n.format("gui.cancel", new Object[0])));
         this.selectServer(this.serverListSelector.func_148193_k());
     }
@@ -158,6 +162,8 @@ public class GuiMultiplayer extends GuiScreen implements GuiYesNoCallback {
                 this.mc.displayGuiScreen(this.parentScreen);
             } else if (button.id == 8) {
                 this.refreshServerList();
+            } else if (button.id == 9) {
+                mc.displayGuiScreen(new GuiProtocolSelector(this));
             }
         }
     }

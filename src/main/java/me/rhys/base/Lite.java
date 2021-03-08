@@ -1,5 +1,6 @@
 package me.rhys.base;
 
+import com.github.creeper123123321.viafabric.ViaFabric;
 import me.rhys.client.Manager;
 import me.rhys.base.client.ClientManifest;
 import me.rhys.base.command.CommandFactory;
@@ -49,6 +50,9 @@ public class Lite {
 
         InitializeEvent initializeEvent;
 
+        // load viamcp
+        loadViaMcp();
+
         // register the client so it can receive events
         EVENT_BUS.register(new Manager());
 
@@ -95,5 +99,13 @@ public class Lite {
     public static void shutdown() {
         // save all the data to the files
         FILE_FACTORY.save();
+    }
+
+    private static void loadViaMcp() {
+        try {
+            new ViaFabric().onInitialize();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
