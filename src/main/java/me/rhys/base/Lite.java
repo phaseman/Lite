@@ -51,7 +51,11 @@ public class Lite {
         InitializeEvent initializeEvent;
 
         // load viamcp
-        loadViaMcp();
+        try {
+            new ViaFabric().onInitialize();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         // register the client so it can receive events
         EVENT_BUS.register(new Manager());
@@ -99,13 +103,5 @@ public class Lite {
     public static void shutdown() {
         // save all the data to the files
         FILE_FACTORY.save();
-    }
-
-    private static void loadViaMcp() {
-        try {
-            new ViaFabric().onInitialize();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }
