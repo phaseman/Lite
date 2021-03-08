@@ -14,7 +14,7 @@ public class Packet extends ModuleMode<Criticals> {
     private final Timer timer = new Timer();
 
     public void doCriticalHit() {
-        if (this.timer.hasReached(60L)) {
+        if (this.timer.hasReached(60L) && mc.thePlayer.onGround) {
             this.timer.reset();
             for (double offset : this.offsets) {
                 mc.thePlayer.sendQueue.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,

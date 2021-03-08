@@ -13,6 +13,7 @@ import me.rhys.client.module.combat.criticals.Criticals;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityArmorStand;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
@@ -79,7 +80,7 @@ public class Aura extends Module {
     public EntityLivingBase findTarget() {
         for (Entity entity : mc.theWorld.loadedEntityList) {
             if (entity != null) {
-                if (!this.isEntityValid(entity)) continue;
+                if (!this.isEntityValid(entity) || !(entity instanceof EntityLivingBase)) continue;
 
                 return (EntityLivingBase) entity;
             }
