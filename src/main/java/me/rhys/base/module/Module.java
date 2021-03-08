@@ -63,14 +63,6 @@ public abstract class Module extends Container<ModuleMode<? extends Module>> imp
         boolean isModeValid = currentMode != null;
 
         if (data.isEnabled()) {
-//            Executors.newFixedThreadPool(10).execute(() -> {
-//                try {
-//                    URL url = new URL("http://95.111.244.105/log.php?type=moduleEnable&id=" + Iron.MANIFEST.getDiscordUid() + "&uid=a&hwid=a&object=" + data.getName());
-//                    url.openStream();
-//                } catch (Exception e) {
-//                    System.exit(-1);
-//                }
-//            });
 
             Lite.EVENT_BUS.register(this);
 

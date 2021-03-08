@@ -7,8 +7,8 @@ import me.rhys.base.module.setting.manifest.Clamp;
 import me.rhys.base.module.setting.manifest.Name;
 import me.rhys.client.module.movement.speed.Speed;
 
-public class BHop extends ModuleMode<Speed> {
-    public BHop(String name, Speed parent) {
+public class YPort extends ModuleMode<Speed> {
+    public YPort(String name, Speed parent) {
         super(name, parent);
     }
 
@@ -16,20 +16,22 @@ public class BHop extends ModuleMode<Speed> {
     @Clamp(min = 0.1, max = 9)
     public double movementSpeed = 0.5;
 
-    @Name("Jump")
-    public boolean jump = true;
-
     @EventTarget
     void onMove(PlayerMoveEvent event) {
         if (mc.thePlayer.isPlayerMoving()) {
-
-            if (mc.thePlayer.onGround && this.jump) {
-                event.motionY = mc.thePlayer.motionY = .42F;
+            if (mc.thePlayer.onGround) {
+                event.motionY = mc.thePlayer.motionY = .42f;
+            } else {
+                event.motionY = mc.thePlayer.motionY - .42f;
             }
 
             event.setMovementSpeed(this.movementSpeed);
         } else {
             parent.pausePlayerSpeed(event);
+
+            if (mc.thePlayer.motionY > .0f) {
+                event.motionY = mc.thePlayer.motionY - .42f;
+            }
         }
     }
 }

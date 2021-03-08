@@ -21,6 +21,8 @@ import me.rhys.client.module.movement.step.Step;
 import me.rhys.client.module.player.InventoryMove;
 import me.rhys.client.module.player.NoRotate;
 import me.rhys.client.module.player.Timer;
+import me.rhys.client.module.player.disabler.Disabler;
+import me.rhys.client.module.player.nofall.NoFall;
 import me.rhys.client.module.render.*;
 import me.rhys.client.module.render.animations.Animations;
 import me.rhys.client.ui.alt.AltUI;
@@ -75,6 +77,8 @@ public class Manager {
                 new Chams("Chams", "Chams?", Category.RENDER, Keyboard.KEY_NONE),
                 new Nametags("Nametags", "Display a player's nametag", Category.RENDER, Keyboard.KEY_NONE),
                 new NoHurtCam("NoHurtCam", "Hides hurtcam", Category.RENDER, Keyboard.KEY_NONE),
+                new NoFall("NoFall", "Prevents fall damage", Category.PLAYER, Keyboard.KEY_NONE),
+                new Disabler("Disabler", "Disables Anti-Cheats", Category.PLAYER, Keyboard.KEY_NONE),
 
                 new Reach("Reach", "Extend Reach", Category.GHOST, Keyboard.KEY_NONE),
                 new AutoClicker("AutoClicker", "Clicks for you", Category.GHOST, Keyboard.KEY_NONE)
