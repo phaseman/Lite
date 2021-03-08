@@ -50,7 +50,7 @@ public class Lite {
 
         InitializeEvent initializeEvent;
 
-        // load viamcp
+        // register viamcp
         try {
             new ViaFabric().onInitialize();
         } catch (Exception e) {
