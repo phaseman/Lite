@@ -8,6 +8,8 @@ import me.rhys.base.module.Module;
 import me.rhys.base.module.data.Category;
 import me.rhys.base.module.setting.manifest.Clamp;
 import me.rhys.base.module.setting.manifest.Name;
+import me.rhys.base.util.RotationUtil;
+import me.rhys.base.util.vec.Vec2f;
 import me.rhys.client.module.combat.aura.modes.Single;
 import me.rhys.client.module.combat.criticals.Criticals;
 import net.minecraft.entity.Entity;
@@ -17,6 +19,9 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
 
 public class Aura extends Module {
     public Aura(String name, String description, Category category, int keyCode) {
@@ -31,6 +36,9 @@ public class Aura extends Module {
     @Name("Reach")
     @Clamp(min = 1, max = 9)
     public double reach = 4.25f;
+
+    @Name("rayCheck")
+    public boolean rayCheck = true;
 
     @Name("Monsters")
     public boolean monsters = false;
@@ -91,7 +99,21 @@ public class Aura extends Module {
     private boolean isEntityValid(Entity entity) {
         if (mc.thePlayer.isEntityEqual(entity)) return false;
 
-        if (mc.thePlayer.getDistanceToEntity(entity) >= reach) return false;
+        //Checking reach distance
+        if(rayCheck) {
+            final AxisAlignedBB targetBox = entity.getEntityBoundingBox();
+            final Vec2f rotation = RotationUtil.getRotations(entity);
+
+            final Vec3 origin = mc.thePlayer.getPositionEyes(1.0f);
+            Vec3 look = entity.getVectorForRotation(rotation.y, rotation.x);
+
+            look = origin.addVector(look.xCoord * reach,
+                    look.yCoord * reach,
+                    look.zCoord * reach);
+            MovingObjectPosition collision = targetBox.calculateIntercept(origin, look);
+
+            if (collision == null) return false;
+        } else if (mc.thePlayer.getDistanceToEntity(entity) >= reach) return false;
 
         if (Lite.FRIEND_MANAGER.getFriend(entity.getName()) != null) return false;
 
