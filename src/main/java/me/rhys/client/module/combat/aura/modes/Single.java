@@ -50,27 +50,6 @@ public class Single extends ModuleMode<Aura> {
     }
 
     void swing(Entity target) {
-        final AxisAlignedBB targetBox = target.getEntityBoundingBox();
-
-        Vec3 origin = mc.thePlayer.getPositionEyes(1.0f);
-        Vec3 look = mc.thePlayer.getLook(1.0f);
-
-        look = origin.addVector(look.xCoord * getParent().reach,
-                look.yCoord * getParent().reach,
-                look.zCoord * getParent().reach);
-        MovingObjectPosition collision = targetBox.calculateIntercept(origin, look);
-
-        if(collision == null) {
-            System.out.println("Did not collide with the player.");
-            return;
-        }
-
-        double distance = collision.hitVec.distanceTo(origin);
-        if(distance > getParent().reach) {
-            System.out.printf("The target is too far (%.3f>-%.3f)%n", distance, getParent().reach);
-            return;
-        }
-
         double aps = (parent.cps + MathUtil.randFloat(MathUtil.randFloat(1, 3), MathUtil.randFloat(3, 5)));
 
         if (this.attackTimer.hasReached(1000L / aps)) {
