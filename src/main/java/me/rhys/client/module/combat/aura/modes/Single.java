@@ -1,6 +1,5 @@
 package me.rhys.client.module.combat.aura.modes;
 
-import lombok.extern.slf4j.Slf4j;
 import me.rhys.base.event.Event;
 import me.rhys.base.event.data.EventTarget;
 import me.rhys.base.event.impl.player.PlayerMotionEvent;
@@ -13,9 +12,6 @@ import me.rhys.base.util.vec.Vec2f;
 import me.rhys.client.module.combat.aura.Aura;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.play.client.C02PacketUseEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
 
 public class Single extends ModuleMode<Aura> {
     public Single(String name, Aura parent) {
