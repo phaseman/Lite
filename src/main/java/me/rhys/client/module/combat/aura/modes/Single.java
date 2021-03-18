@@ -1,5 +1,6 @@
 package me.rhys.client.module.combat.aura.modes;
 
+import lombok.extern.slf4j.Slf4j;
 import me.rhys.base.event.Event;
 import me.rhys.base.event.data.EventTarget;
 import me.rhys.base.event.impl.player.PlayerMotionEvent;
@@ -12,6 +13,9 @@ import me.rhys.base.util.vec.Vec2f;
 import me.rhys.client.module.combat.aura.Aura;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.play.client.C02PacketUseEntity;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
 
 public class Single extends ModuleMode<Aura> {
     public Single(String name, Aura parent) {
@@ -46,6 +50,27 @@ public class Single extends ModuleMode<Aura> {
     }
 
     void swing(Entity target) {
+        final AxisAlignedBB targetBox = target.getEntityBoundingBox();
+
+        Vec3 origin = mc.thePlayer.getPositionEyes(1.0f);
+        Vec3 look = mc.thePlayer.getLook(1.0f);
+
+        look = origin.addVector(look.xCoord * getParent().reach,
+                look.yCoord * getParent().reach,
+                look.zCoord * getParent().reach);
+        MovingObjectPosition collision = targetBox.calculateIntercept(origin, look);
+
+        if(collision == null) {
+            System.out.println("Did not collide with the player.");
+            return;
+        }
+
+        double distance = collision.hitVec.distanceTo(origin);
+        if(distance > getParent().reach) {
+            System.out.printf("The target is too far (%.3f>-%.3f)%n", distance, getParent().reach);
+            return;
+        }
+
         double aps = (parent.cps + MathUtil.randFloat(MathUtil.randFloat(1, 3), MathUtil.randFloat(3, 5)));
 
         if (this.attackTimer.hasReached(1000L / aps)) {

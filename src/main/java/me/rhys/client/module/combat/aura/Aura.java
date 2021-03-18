@@ -32,6 +32,10 @@ public class Aura extends Module {
     @Clamp(min = 1, max = 9)
     public double reach = 4.25f;
 
+    @Name("LookReach")
+    @Clamp(min = 1, max = 12)
+    public double lookReach = 6f;
+
     @Name("Monsters")
     public boolean monsters = false;
 
@@ -91,7 +95,7 @@ public class Aura extends Module {
     private boolean isEntityValid(Entity entity) {
         if (mc.thePlayer.isEntityEqual(entity)) return false;
 
-        if (mc.thePlayer.getDistanceToEntity(entity) >= reach) return false;
+        if (mc.thePlayer.getDistanceToEntity(entity) >= lookReach) return false;
 
         if (Lite.FRIEND_MANAGER.getFriend(entity.getName()) != null) return false;
 
