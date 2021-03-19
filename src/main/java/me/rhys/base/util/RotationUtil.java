@@ -50,4 +50,11 @@ public class RotationUtil {
     public static Vec2f getRotations(Vec3 position) {
         return getRotations(minecraft.thePlayer.getPositionVector().addVector(0.0D, minecraft.thePlayer.getEyeHeight(), 0.0D), position);
     }
+
+    public static Vec2f clampRotation(Vec2f rotation) {
+        float f = minecraft.gameSettings.mouseSensitivity * 0.6F + 0.2F;
+        float f1 = f * f * f * 1.2f;
+
+        return new Vec2f(rotation.x - (rotation.x % f1), rotation.y - (rotation.y % f1));
+    }
 }
