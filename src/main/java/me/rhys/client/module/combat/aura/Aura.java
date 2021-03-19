@@ -8,7 +8,9 @@ import me.rhys.base.module.Module;
 import me.rhys.base.module.data.Category;
 import me.rhys.base.module.setting.manifest.Clamp;
 import me.rhys.base.module.setting.manifest.Name;
+import me.rhys.base.util.MathUtil;
 import me.rhys.base.util.RotationUtil;
+import me.rhys.base.util.Timer;
 import me.rhys.base.util.vec.Vec2f;
 import me.rhys.client.module.combat.aura.modes.Single;
 import me.rhys.client.module.combat.criticals.Criticals;
@@ -19,6 +21,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.play.client.C02PacketUseEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
@@ -37,8 +40,11 @@ public class Aura extends Module {
     @Clamp(min = 1, max = 9)
     public double reach = 4.25f;
 
-    @Name("rayCheck")
+    @Name("RayCheck")
     public boolean rayCheck = true;
+
+    @Name("Post")
+    public boolean post = false;
 
     @Name("Monsters")
     public boolean monsters = false;
@@ -51,6 +57,9 @@ public class Aura extends Module {
 
     @Name("KeepSprint")
     public boolean keepSprint = false;
+
+    @Name("MinecraftRotation")
+    public boolean minecraftRotation = true;
 
     @Name("LockView")
     public boolean lockView = false;
@@ -66,6 +75,13 @@ public class Aura extends Module {
     public int crackSize = 4;
 
     public EntityLivingBase target;
+
+    public  final Timer attackTimer = new Timer();
+
+    @Override
+    public void onEnable() {
+        this.attackTimer.reset();
+    }
 
     @Override
     public void onDisable() {
@@ -156,6 +172,23 @@ public class Aura extends Module {
                 }
             }
         }
+    }
+
+    public void swing(Entity target) {
+        double aps = (cps + MathUtil.randFloat(MathUtil.randFloat(1, 3), MathUtil.randFloat(3, 5)));
+
+        if (this.attackTimer.hasReached(1000L / aps)) {
+            this.attackTimer.reset();
+            mc.thePlayer.swingItem();
+            doCritical();
+            mc.thePlayer.sendQueue.addToSendQueue(new C02PacketUseEntity(target, C02PacketUseEntity.Action.ATTACK));
+        }
+    }
+
+    public void aimAtTarget(PlayerMotionEvent event, Entity target) {
+        Vec2f rotation = RotationUtil.getRotations(target);
+        if(minecraftRotation) rotation = RotationUtil.clampRotation(rotation);
+        event.getPosition().setRotation(rotation);
     }
 
     public enum CrackType {
