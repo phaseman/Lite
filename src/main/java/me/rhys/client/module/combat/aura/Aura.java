@@ -40,6 +40,10 @@ public class Aura extends Module {
     @Clamp(min = 1, max = 9)
     public double reach = 4.25f;
 
+    @Name("Smoothness")
+    @Clamp(min = 0, max = 100)
+    public float smoothness = 0f;
+
     @Name("RayCheck")
     public boolean rayCheck = true;
 
@@ -76,7 +80,8 @@ public class Aura extends Module {
 
     public EntityLivingBase target;
 
-    public  final Timer attackTimer = new Timer();
+    public final Timer attackTimer = new Timer();
+    public Vec2f currentRotation = null;
 
     @Override
     public void onEnable() {
@@ -86,6 +91,7 @@ public class Aura extends Module {
     @Override
     public void onDisable() {
         this.target = null;
+        currentRotation = null;
     }
 
     @EventTarget
@@ -187,6 +193,20 @@ public class Aura extends Module {
 
     public void aimAtTarget(PlayerMotionEvent event, Entity target) {
         Vec2f rotation = RotationUtil.getRotations(target);
+        
+        if(smoothness > 0f) {
+            if(currentRotation == null)
+                currentRotation = new Vec2f(mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch);
+            float yaw = RotationUtil.updateYawRotation(currentRotation.x, rotation.x,
+                    Math.max(1, 180 * (1 - smoothness / 100f)));
+            float pitch = RotationUtil.updatePitchRotation(currentRotation.y, rotation.y,
+                    Math.max(1, 90f * (1 - smoothness / 100f)));
+
+            rotation.x = yaw;
+            rotation.y = pitch;
+            currentRotation = rotation;
+        }
+        
         if(minecraftRotation) rotation = RotationUtil.clampRotation(rotation);
         event.getPosition().setRotation(rotation);
     }
