@@ -2,6 +2,7 @@ package me.rhys.client.ui.alt.element;
 
 import lombok.Getter;
 import me.rhys.base.ui.element.panel.Panel;
+import me.rhys.base.util.LoginThread;
 import me.rhys.base.util.render.FontUtil;
 import me.rhys.base.util.vec.Vec2f;
 
@@ -10,6 +11,7 @@ public class AccountItem extends Panel {
 
     private final String email;
     private final String password;
+    private long lastClick = System.currentTimeMillis();
 
     public AccountItem(String email, String password, int width, int height) {
         super(new Vec2f(), width, height);
@@ -49,4 +51,22 @@ public class AccountItem extends Panel {
         super.draw(mouse, partialTicks);
     }
 
+    @Override
+    public void clickMouse(Vec2f pos, int button) {
+        //This is to prevent spam logging in, which can cause the account to get locked by Mojang
+        //or your current IP to get temporarily blacklisted.
+        if(System.currentTimeMillis() - lastClick > 1000L) {
+            LoginThread loginThread = new LoginThread(
+                    email,
+                    password
+            );
+            loginThread.playSound = true;
+
+            loginThread.start();
+
+            getScreen().displayPopup(null);
+            lastClick = System.currentTimeMillis();
+        }
+        super.clickMouse(pos, button);
+    }
 }

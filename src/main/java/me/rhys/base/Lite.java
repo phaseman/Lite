@@ -18,32 +18,28 @@ import me.rhys.base.module.ModuleFactory;
 import me.rhys.base.module.setting.SettingFactory;
 import org.lwjgl.opengl.Display;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+
 public class Lite {
 
-    public static final EventBus EVENT_BUS
-            = new EventBus();
+    public static final EventBus EVENT_BUS = new EventBus();
 
-    public static final ModuleFactory MODULE_FACTORY
-            = new ModuleFactory();
+    public static final ModuleFactory MODULE_FACTORY = new ModuleFactory();
 
-    public static final SettingFactory SETTING_FACTORY
-            = new SettingFactory();
+    public static final SettingFactory SETTING_FACTORY = new SettingFactory();
 
-    public static final FileFactory FILE_FACTORY
-            = new FileFactory();
+    public static final FileFactory FILE_FACTORY = new FileFactory();
 
-    public static final CommandFactory COMMAND_FACTORY
-            = new CommandFactory('.');
+    public static final CommandFactory COMMAND_FACTORY = new CommandFactory('.');
 
-    public static final ClientManifest MANIFEST
-            = new ClientManifest("Lite",
-            "2.0");
+    public static final ClientManifest MANIFEST = new ClientManifest("Lite Staff Edition", "2.0");
 
-    public static final FriendManager FRIEND_MANAGER
-            = new FriendManager();
+    public static final FriendManager FRIEND_MANAGER = new FriendManager();
 
-    public static final String CLIENT_VERSION
-            = MANIFEST.getVersion();
+    public static final String CLIENT_VERSION = MANIFEST.getVersion();
+
+    public static final ScheduledExecutorService EXECUTOR_SERVICE = Executors.newSingleThreadScheduledExecutor();
 
 
     public static void initialize() {

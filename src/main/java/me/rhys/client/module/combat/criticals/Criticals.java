@@ -1,6 +1,7 @@
 package me.rhys.client.module.combat.criticals;
 
 import me.rhys.base.module.Module;
+import me.rhys.base.module.ModuleMode;
 import me.rhys.base.module.data.Category;
 import me.rhys.client.module.combat.criticals.modes.Packet;
 
@@ -16,7 +17,7 @@ public class Criticals extends Module {
     }
 
     public void processCriticalHit() {
-        switch (getCurrentMode().getName()) {
+        switch (getCurrentMode().map(ModuleMode::getName).orElse("null")) {
             case "Packet": {
                 this.packet.doCriticalHit();
                 break;

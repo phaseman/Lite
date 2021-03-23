@@ -4,6 +4,7 @@ import me.rhys.base.util.entity.Location;
 import me.rhys.base.util.vec.Vec2f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 
 /**
@@ -56,5 +57,23 @@ public class RotationUtil {
         float f1 = f * f * f * 1.2f;
 
         return new Vec2f(rotation.x - (rotation.x % f1), rotation.y - (rotation.y % f1));
+    }
+
+    public static float updateYawRotation(float playerYaw, float targetYaw, float maxSpeed) {
+        float speed = MathHelper.wrapAngleTo180_float(((targetYaw - playerYaw)));
+        if (speed > maxSpeed)
+            speed = maxSpeed;
+        if (speed < -maxSpeed)
+            speed = -maxSpeed;
+        return (playerYaw + speed);
+    }
+
+    public static float updatePitchRotation(float playerPitch, float targetPitch, float maxSpeed) {
+        float speed = MathHelper.wrapAngleTo180_float(((targetPitch - playerPitch)));
+        if (speed > maxSpeed)
+            speed = maxSpeed;
+        if (speed < -maxSpeed)
+            speed = -maxSpeed;
+        return (playerPitch + speed);
     }
 }
