@@ -68,7 +68,7 @@ public class GuiProtocolSelector extends GuiScreen {
 
         @Override
         protected void elementClicked(int i, boolean b, int i1, int i2) {
-            ViaFabric.clientSideVersion = ProtocolSorter.getProtocolVersions().get(i).getId();
+            ViaFabric.clientSideVersion = ProtocolSorter.getProtocolVersions().get(i).getVersion();
         }
 
         @Override
@@ -83,7 +83,7 @@ public class GuiProtocolSelector extends GuiScreen {
 
         @Override
         protected void drawSlot(int i, int i1, int i2, int i3, int i4, int i5) {
-            drawCenteredString(mc.fontRendererObj,(ViaFabric.clientSideVersion == ProtocolSorter.getProtocolVersions().get(i).getId() ? EnumChatFormatting.GREEN.toString() : EnumChatFormatting.WHITE.toString()) + ProtocolUtils.getProtocolName(ProtocolSorter.getProtocolVersions().get(i).getId()) , width / 2, i2 + 2, -1);
+            drawCenteredString(mc.fontRendererObj,(ViaFabric.clientSideVersion == ProtocolSorter.getProtocolVersions().get(i).getVersion() ? EnumChatFormatting.GREEN.toString() : EnumChatFormatting.WHITE.toString()) + ProtocolUtils.getProtocolName(ProtocolSorter.getProtocolVersions().get(i).getVersion()) , width / 2, i2 + 2, -1);
         }
     }
 }
