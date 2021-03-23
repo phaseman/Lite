@@ -1,6 +1,7 @@
 package net.minecraft.client.renderer.entity;
 
 import com.google.common.collect.Lists;
+import lombok.val;
 import me.rhys.base.Lite;
 import me.rhys.base.event.Event;
 import me.rhys.base.event.impl.player.PlayerMotionEvent;
@@ -120,9 +121,10 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
                 float f = this.interpolateRotation(entity.prevRenderYawOffset, entity.renderYawOffset, partialTicks);
                 float f1 = this.interpolateRotation(entity.prevRotationYawHead, entity.rotationYawHead, partialTicks);
 
-                boolean isRotationModuleEnabled =
-                        Lite.MODULE_FACTORY.findByClass(Aura.class).getData().isEnabled()
-                                && ((Aura) Lite.MODULE_FACTORY.findByClass(Aura.class)).target != null;
+                Aura aura = (Aura) Lite.MODULE_FACTORY.findByClass(Aura.class);
+                boolean isRotationModuleEnabled = aura != null &&
+                        aura.getData().isEnabled()
+                                && aura.target != null;
 
                 if (entity.isEntityEqual(Minecraft.getMinecraft().thePlayer)
                         && PlayerMotionEvent.position != null && isRotationModuleEnabled) {

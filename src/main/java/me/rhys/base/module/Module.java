@@ -14,6 +14,7 @@ import net.minecraft.util.EnumChatFormatting;
 import org.lwjgl.input.Keyboard;
 
 import java.util.List;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -60,7 +61,7 @@ public abstract class Module extends Container<ModuleMode<? extends Module>> imp
         val currentMode = getCurrentMode();
 
         // basic check to see if a mode is valid or not
-        boolean isModeValid = currentMode != null;
+        boolean isModeValid = currentMode.isPresent();
 
         if (data.isEnabled()) {
 
@@ -76,7 +77,7 @@ public abstract class Module extends Container<ModuleMode<? extends Module>> imp
 
                 // is mode is valid trigger the enable method
                 if (isModeValid) {
-                    currentMode.onEnable();
+                    currentMode.ifPresent(Toggleable::onEnable);
                 }
             }
         } else {
@@ -92,7 +93,7 @@ public abstract class Module extends Container<ModuleMode<? extends Module>> imp
 
                 // is mode is valid trigger the enable method
                 if (isModeValid) {
-                    currentMode.onDisable();
+                    currentMode.ifPresent(Toggleable::onDisable);
                 }
             }
         }
@@ -135,7 +136,7 @@ public abstract class Module extends Container<ModuleMode<? extends Module>> imp
 
             // check if the world is loaded if so call the disable method
             if (isWorldLoaded) {
-                currentMode.onDisable();
+                currentMode.ifPresent(Toggleable::onDisable);
             }
 
             // un-register the old mode
@@ -152,7 +153,7 @@ public abstract class Module extends Container<ModuleMode<? extends Module>> imp
         if (data.isEnabled()) {
             // check if the world is loaded if so call the enable method
             if (isWorldLoaded) {
-                currentMode.onEnable();
+                currentMode.ifPresent(Toggleable::onEnable);
             }
 
             // register the new mode
@@ -160,22 +161,19 @@ public abstract class Module extends Container<ModuleMode<? extends Module>> imp
         }
     }
 
-    public ModuleMode<? extends Module> getCurrentMode() {
+    public Optional<ModuleMode<? extends Module>> getCurrentMode() {
         if (data.getCurrentMode() == -1 || isEmpty()) {
-            return null;
+            return Optional.empty();
         }
 
-        ModuleMode<? extends Module> moduleMode = get(data.getCurrentMode());
+        Optional<ModuleMode<? extends Module>> moduleMode = get(data.getCurrentMode());
 
-        if (moduleMode != null) {
-            return moduleMode;
-        } else {
-            return get(0);
-        }
+        return moduleMode;
     }
 
     public String getDisplayName() {
-        return data.getName() + (getCurrentMode() != null ? (EnumChatFormatting.GRAY + " " + getCurrentMode().getName()) : "");
+        return data.getName() + (getCurrentMode().isPresent() ? (EnumChatFormatting.GRAY + " "
+                + getCurrentMode().map(ModuleMode::getName).orElse("null")) : "");
     }
 
     public List<String> getModeNames() {

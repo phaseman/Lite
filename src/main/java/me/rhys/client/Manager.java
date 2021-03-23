@@ -61,25 +61,25 @@ public class Manager {
     @EventTarget
     public void moduleInitialize(ModuleInitializeEvent event) {
         event.register(
-                new Aura("Aura", "Attacks players for you", Category.COMBAT, Keyboard.KEY_NONE),
-                new Velocity("Velocity", "Control your velocity", Category.COMBAT, Keyboard.KEY_NONE),
-                new Criticals("Criticals", "Force Critical attacks", Category.COMBAT, Keyboard.KEY_NONE),
+                //new Aura("Aura", "Attacks players for you", Category.COMBAT, Keyboard.KEY_NONE),
+                //new Velocity("Velocity", "Control your velocity", Category.COMBAT, Keyboard.KEY_NONE),
+               // new Criticals("Criticals", "Force Critical attacks", Category.COMBAT, Keyboard.KEY_NONE),
 
                 new Sprint("Sprint", "Sprints for you", Category.MOVEMENT, Keyboard.KEY_NONE),
-                new Fly("Fly", "Fly like a faggot", Category.MOVEMENT, Keyboard.KEY_NONE),
-                new Speed("Speed", "move at un-legit speeds", Category.MOVEMENT, Keyboard.KEY_NONE),
-                new NoSlow("NoSlow", "Removes slowdown from items / blocks",
-                        Category.MOVEMENT, Keyboard.KEY_NONE),
-                new Step("Step", "Steps up blocks", Category.MOVEMENT, Keyboard.KEY_NONE),
-                new Sneak("Sneak", "Make your player sneak", Category.MOVEMENT, Keyboard.KEY_NONE),
+                //new Fly("Fly", "Fly like a faggot", Category.MOVEMENT, Keyboard.KEY_NONE),
+                //new Speed("Speed", "move at un-legit speeds", Category.MOVEMENT, Keyboard.KEY_NONE),
+                //new NoSlow("NoSlow", "Removes slowdown from items / blocks",
+                //        Category.MOVEMENT, Keyboard.KEY_NONE),
+                //new Step("Step", "Steps up blocks", Category.MOVEMENT, Keyboard.KEY_NONE),
+               // new Sneak("Sneak", "Make your player sneak", Category.MOVEMENT, Keyboard.KEY_NONE),
 
-                new Timer("Timer", "Control game time", Category.PLAYER, Keyboard.KEY_NONE),
-                new PingSpoof("PingSpoof", "Spoof your connection latency",
-                        Category.PLAYER, Keyboard.KEY_NONE),
-                new InventoryMove("InventoryMove", "Allows you to move in your inventory",
-                        Category.PLAYER, Keyboard.KEY_NONE),
-                new NoRotate("NoRotate", "Prevents Server from changing head position",
-                        Category.PLAYER, Keyboard.KEY_NONE),
+               // new Timer("Timer", "Control game time", Category.PLAYER, Keyboard.KEY_NONE),
+                //new PingSpoof("PingSpoof", "Spoof your connection latency",
+                        //Category.PLAYER, Keyboard.KEY_NONE),
+                //new InventoryMove("InventoryMove", "Allows you to move in your inventory",
+                        //Category.PLAYER, Keyboard.KEY_NONE),
+                //new NoRotate("NoRotate", "Prevents Server from changing head position",
+                        //Category.PLAYER, Keyboard.KEY_NONE),
 
                 new HUD("HUD", "HUD for the client", Category.RENDER, Keyboard.KEY_NONE),
                 new ClickGui("ClickGui", "Opens the ClickUI", Category.RENDER, Keyboard.KEY_RSHIFT),
@@ -88,12 +88,12 @@ public class Manager {
                 new Chams("Chams", "Chams?", Category.RENDER, Keyboard.KEY_NONE),
                 new Nametags("Nametags", "Display a player's nametag",
                         Category.RENDER, Keyboard.KEY_NONE),
-                new NoHurtCam("NoHurtCam", "Hides hurtcam", Category.RENDER, Keyboard.KEY_NONE),
-                new NoFall("NoFall", "Prevents fall damage", Category.PLAYER, Keyboard.KEY_NONE),
-                new Disabler("Disabler", "Disables Anti-Cheats", Category.PLAYER, Keyboard.KEY_NONE),
+                new NoHurtCam("NoHurtCam", "Hides hurtcam", Category.RENDER, Keyboard.KEY_NONE)//,
+                //new NoFall("NoFall", "Prevents fall damage", Category.PLAYER, Keyboard.KEY_NONE),
+                //new Disabler("Disabler", "Disables Anti-Cheats", Category.PLAYER, Keyboard.KEY_NONE),
 
-                new Reach("Reach", "Extend Reach", Category.GHOST, Keyboard.KEY_NONE),
-                new AutoClicker("AutoClicker", "Clicks for you", Category.GHOST, Keyboard.KEY_NONE)
+               // new Reach("Reach", "Extend Reach", Category.GHOST, Keyboard.KEY_NONE),
+               // new AutoClicker("AutoClicker", "Clicks for you", Category.GHOST, Keyboard.KEY_NONE)
         );
     }
 

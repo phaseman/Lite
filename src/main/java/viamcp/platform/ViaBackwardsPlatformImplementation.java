@@ -27,11 +27,6 @@ public class ViaBackwardsPlatformImplementation implements ViaBackwardsPlatform 
             public boolean isFix1_13FacePlayer() {
                 return true;
             }
-
-            @Override
-            public boolean alwaysShowOriginalMobName() {
-                return true;
-            }
         });
         init(Minecraft.getMinecraft().mcDataDir);
     }

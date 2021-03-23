@@ -1,6 +1,7 @@
 package net.minecraft.client.renderer;
 
 import me.rhys.base.Lite;
+import me.rhys.base.module.ModuleMode;
 import me.rhys.client.module.render.animations.Animations;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -371,7 +372,7 @@ public class ItemRenderer
                         Animations animations = (Animations) Lite.MODULE_FACTORY.findByClass(Animations.class);
 
                         if (animations.getData().isEnabled()) {
-                            switch (animations.getCurrentMode().getName()) {
+                            switch (animations.getCurrentMode().map(ModuleMode::getName).orElse("1.7")) {
                                 case "1.7": {
                                     this.transformFirstPersonItemBlock2(f, f1);
                                     this.func_178103_d2();

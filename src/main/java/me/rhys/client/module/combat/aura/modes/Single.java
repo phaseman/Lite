@@ -5,9 +5,7 @@ import me.rhys.base.event.data.EventTarget;
 import me.rhys.base.event.impl.player.PlayerMotionEvent;
 import me.rhys.base.event.impl.player.PlayerUpdateEvent;
 import me.rhys.base.module.ModuleMode;
-import me.rhys.base.util.MathUtil;
 import me.rhys.base.util.RotationUtil;
-import me.rhys.base.util.Timer;
 import me.rhys.base.util.vec.Vec2f;
 import me.rhys.client.module.combat.aura.Aura;
 

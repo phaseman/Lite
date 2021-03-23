@@ -33,7 +33,7 @@ public class Lite {
 
     public static final CommandFactory COMMAND_FACTORY = new CommandFactory('.');
 
-    public static final ClientManifest MANIFEST = new ClientManifest("Lite", "2.0");
+    public static final ClientManifest MANIFEST = new ClientManifest("Lite Staff Edition", "2.0");
 
     public static final FriendManager FRIEND_MANAGER = new FriendManager();
 

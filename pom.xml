@@ -15,6 +15,10 @@
 
     <repositories>
         <repository>
+            <id>viaversion-everything</id>
+            <url>https://repo.viaversion.com/everything</url>
+        </repository>
+        <repository>
             <id>funkemunky-releases</id>
             <url>https://nexus.funkemunky.cc/content/repositories/releases/</url>
         </repository>
@@ -206,12 +210,12 @@
         <dependency>
             <groupId>nl.matsv</groupId>
             <artifactId>ViaBackwards</artifactId>
-            <version>3.3.0-20w45a</version>
+            <version>3.1.1</version>
         </dependency>
         <dependency>
             <groupId>us.myles</groupId>
             <artifactId>ViaVersion</artifactId>
-            <version>3.3.0-20w45a</version>
+            <version>3.1.1</version>
         </dependency>
     </dependencies>
 
