@@ -253,20 +253,16 @@ public class AltUI extends UIScreen {
             GL11.glEnable(GL11.GL_SCISSOR_TEST);
             GL11.glLineWidth(2f);
 
-            RenderUtil.clipRect(serversPanel.pos, serversPanel.pos.clone()
-                    .add(serversPanel.getWidth(), serversPanel.getHeight()), getScale());
+            RenderUtil.clipRect(serversPanel.pos, serversPanel.pos.clone().add(serversPanel.getWidth(), serversPanel.getHeight()), getScale());
 
-            serversPanel.getContainer().get(currentServer)
-                    .ifPresent(button -> {
-                        AltServerButton altServerButton = (AltServerButton) button;
-                        Vec2f pos = altServerButton.pos.clone().sub(0, serversPanel.getScrollAmount());
-                        RenderUtil.drawOutlineRect(pos, pos.clone()
-                                .add(altServerButton.getWidth(), altServerButton.getHeight()), -1);
+            AltServerButton altServerButton = (AltServerButton) serversPanel.getContainer().get(currentServer);
 
-                        GL11.glLineWidth(1f);
-                        GL11.glDisable(GL11.GL_SCISSOR_TEST);
-                        GlStateManager.popMatrix();
-                    });
+            Vec2f pos = altServerButton.pos.clone().sub(0, serversPanel.getScrollAmount());
+            RenderUtil.drawOutlineRect(pos, pos.clone().add(altServerButton.getWidth(), altServerButton.getHeight()), -1);
+
+            GL11.glLineWidth(1f);
+            GL11.glDisable(GL11.GL_SCISSOR_TEST);
+            GlStateManager.popMatrix();
         }
     }
 
@@ -275,9 +271,7 @@ public class AltUI extends UIScreen {
     }
 
     private void drawBorder(Element element) {
-        RenderUtil.drawRect(element.pos.clone().sub(PANEL_BORDER_SIZE, PANEL_BORDER_SIZE),
-                element.getWidth() + PANEL_BORDER_SIZE * 2,
-                element.getHeight() + PANEL_BORDER_SIZE * 2, SHADOW_COLOR);
+        RenderUtil.drawRect(element.pos.clone().sub(PANEL_BORDER_SIZE, PANEL_BORDER_SIZE), element.getWidth() + PANEL_BORDER_SIZE * 2, element.getHeight() + PANEL_BORDER_SIZE * 2, SHADOW_COLOR);
     }
 
     private void reloadServers() {
@@ -290,11 +284,8 @@ public class AltUI extends UIScreen {
         for (int i = 0; i < length; i++) {
             ServerData serverData = savedServerList.getServerData(i);
             if (serverData != null) {
-                AltServerButton altServerButton =
-                        new AltServerButton(serverData, new Vec2f(), serversPanel.getWidth(), 32);
-                altServerButton.background = i % 2 == 0
-                        ? ColorUtil.darken(serversPanel.background, 15).getRGB()
-                        : serversPanel.background;
+                AltServerButton altServerButton = new AltServerButton(serverData, new Vec2f(), serversPanel.getWidth(), 32);
+                altServerButton.background = i % 2 == 0 ? ColorUtil.darken(serversPanel.background, 15).getRGB() : serversPanel.background;
                 serversPanel.add(altServerButton);
             }
         }

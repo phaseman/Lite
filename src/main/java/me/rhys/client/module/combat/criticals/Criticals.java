@@ -17,7 +17,7 @@ public class Criticals extends Module {
     }
 
     public void processCriticalHit() {
-        switch (getCurrentMode().map(ModuleMode::getName).orElse("null")) {
+        switch (getCurrentMode().getName()) {
             case "Packet": {
                 this.packet.doCriticalHit();
                 break;

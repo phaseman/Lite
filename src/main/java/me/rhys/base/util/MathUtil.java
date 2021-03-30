@@ -22,6 +22,11 @@ public class MathUtil {
         return bd.doubleValue();
     }
 
+    public static double preciseRound(double value, int precision) {
+        int scale = (int) Math.pow(10, precision);
+        return (double) Math.round(value * scale) / scale;
+    }
+
     public static int randomNumber(int max, int min) {
         return Math.round(min + (float) Math.random() * ((max - min)));
     }

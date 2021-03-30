@@ -12,6 +12,7 @@ import net.minecraft.util.Vec3;
  */
 public class RotationUtil {
 
+    private static float lastYaw = -1, lastPitch = -1;
     public static Location location, lastLocation;
     private static final Minecraft minecraft = Minecraft.getMinecraft();
 
@@ -52,6 +53,7 @@ public class RotationUtil {
         return getRotations(minecraft.thePlayer.getPositionVector().addVector(0.0D, minecraft.thePlayer.getEyeHeight(), 0.0D), position);
     }
 
+
     public static Vec2f clampRotation(Vec2f rotation) {
         float f = minecraft.gameSettings.mouseSensitivity * 0.6F + 0.2F;
         float f1 = f * f * f * 1.2f;
@@ -75,5 +77,41 @@ public class RotationUtil {
         if (speed < -maxSpeed)
             speed = -maxSpeed;
         return (playerPitch + speed);
+    }
+
+    public static Vec2f getRandomizedRotations(Entity entity) {
+        return getRandomizedRotations(minecraft.thePlayer.getPositionVector().addVector(0.0D,
+                minecraft.thePlayer.getEyeHeight(), 0.0D), entity.getPositionVector().addVector(0.0D, entity.getEyeHeight() / 2, 0.0D));
+    }
+
+    public static Vec2f getRandomizedRotations(Vec3 origin, Vec3 position) {
+        Vec3 org = new Vec3(origin.xCoord, origin.yCoord, origin.zCoord);
+        Vec3 difference = position.subtract(org);
+
+        double distance = difference.flat().lengthVector();
+        float rYaw = MathUtil.randFloat(4, 8);
+        float rPitch = MathUtil.randFloat(5, 15);
+
+        if (rYaw == lastYaw) rYaw *= -1;
+        if (rPitch == lastPitch) rPitch *= -1;
+
+        float yaw = ((float) Math.toDegrees(Math.atan2(difference.zCoord, difference.xCoord)) - 90.0F);
+        float pitch = (float) (-Math.toDegrees(Math.atan2(difference.yCoord, distance)));
+
+        if (MathUtil.randFloat(1, 20) < 15) {
+            yaw += rYaw / 3;
+            if (Math.abs((pitch + rPitch)) <= 90) {
+                pitch += rPitch / 3;
+            }
+        } else {
+            yaw += rYaw;
+            if (Math.abs((pitch + rPitch)) <= 90) {
+                pitch += rPitch;
+            }
+        }
+
+        lastYaw = rYaw;
+        lastPitch = rPitch;
+        return new Vec2f(yaw, pitch);
     }
 }

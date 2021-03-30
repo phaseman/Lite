@@ -14,6 +14,7 @@ import me.rhys.base.util.Timer;
 import me.rhys.base.util.vec.Vec2f;
 import me.rhys.client.module.combat.aura.modes.Single;
 import me.rhys.client.module.combat.criticals.Criticals;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityArmorStand;
@@ -32,6 +33,15 @@ public class Aura extends Module {
         add(new Single("Single", this));
     }
 
+    @Name("Attack Method")
+    public AttackMethod attackMethod = AttackMethod.PRE;
+
+    @Name("Rounding Type")
+    public RoundingType roundingType = RoundingType.NONE;
+
+    @Name("Rotation Type")
+    public RotationType rotationType = RotationType.NORMAL;
+
     @Name("CPS")
     @Clamp(min = 1, max = 20)
     public double cps = 15;
@@ -47,9 +57,6 @@ public class Aura extends Module {
     @Name("RayCheck")
     public boolean rayCheck = true;
 
-    @Name("Post")
-    public boolean post = false;
-
     @Name("Monsters")
     public boolean monsters = false;
 
@@ -61,9 +68,6 @@ public class Aura extends Module {
 
     @Name("KeepSprint")
     public boolean keepSprint = false;
-
-    @Name("MinecraftRotation")
-    public boolean minecraftRotation = true;
 
     @Name("LockView")
     public boolean lockView = false;
@@ -111,7 +115,6 @@ public class Aura extends Module {
         for (Entity entity : mc.theWorld.loadedEntityList) {
             if (entity != null) {
                 if (!this.isEntityValid(entity) || !(entity instanceof EntityLivingBase)) continue;
-
                 return (EntityLivingBase) entity;
             }
         }
@@ -122,7 +125,7 @@ public class Aura extends Module {
         if (mc.thePlayer.isEntityEqual(entity)) return false;
 
         //Checking reach distance
-        if(rayCheck) {
+        if (rayCheck) {
             final AxisAlignedBB targetBox = entity.getEntityBoundingBox();
             final Vec2f rotation = RotationUtil.getRotations(entity);
 
@@ -145,8 +148,6 @@ public class Aura extends Module {
         if (!sleeping && ((EntityLivingBase) entity).isPlayerSleeping())
             return false;
 
-        if (entity.isInvisible() && !invisible)
-            return false;
 
         if (entity instanceof EntityArmorStand)
             return false;
@@ -192,10 +193,10 @@ public class Aura extends Module {
     }
 
     public void aimAtTarget(PlayerMotionEvent event, Entity target) {
-        Vec2f rotation = RotationUtil.getRotations(target);
-        
-        if(smoothness > 0f) {
-            if(currentRotation == null)
+        Vec2f rotation = getRotations(target);
+
+        if (smoothness > 0f) {
+            if (currentRotation == null)
                 currentRotation = new Vec2f(mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch);
             float yaw = RotationUtil.updateYawRotation(currentRotation.x, rotation.x,
                     Math.max(1, 180 * (1 - smoothness / 100f)));
@@ -206,13 +207,69 @@ public class Aura extends Module {
             rotation.y = pitch;
             currentRotation = rotation;
         }
-        
-        if(minecraftRotation) rotation = RotationUtil.clampRotation(rotation);
+
+        if (this.roundingType == RoundingType.MINECRAFT) rotation = RotationUtil.clampRotation(rotation);
         event.getPosition().setRotation(rotation);
+    }
+
+    public Vec2f getRotations(Entity entity) {
+        switch (this.rotationType) {
+            case NORMAL: {
+                return this.wrapRotation(RotationUtil.getNormalRotations(entity));
+            }
+
+            case RANDOM: {
+                return this.wrapRotation(RotationUtil.getRandomizedRotations(entity));
+            }
+        }
+
+        return null;
+    }
+
+    Vec2f wrapRotation(Vec2f vec2f) {
+        float yaw = vec2f.getVecX();
+        float pitch = vec2f.getVecY();
+
+        switch (this.roundingType) {
+            case MODULO: {
+                float sensitivity = Minecraft.getMinecraft().gameSettings.mouseSensitivity;
+                float f = sensitivity * 0.6F + 0.2F;
+                float f2 = f * f * f * 1.2F;
+
+                yaw -= yaw % f2;
+                pitch -= pitch % f2;
+                break;
+            }
+
+            case ROUND: {
+                yaw = (float) MathUtil.preciseRound(yaw, 1);
+                pitch = (float) MathUtil.preciseRound(pitch, 1);
+                break;
+            }
+        }
+
+        return new Vec2f(yaw, pitch);
     }
 
     public enum CrackType {
         ENCHANT,
         NORMAL
+    }
+
+    public enum AttackMethod {
+        PRE,
+        POST
+    }
+
+    public enum RoundingType {
+        NONE,
+        MINECRAFT,
+        MODULO,
+        ROUND,
+    }
+
+    public enum RotationType {
+        NORMAL,
+        RANDOM
     }
 }

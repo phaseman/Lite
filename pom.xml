@@ -200,7 +200,7 @@
         </dependency>
         <dependency>
             <groupId>de.gerrygames</groupId>
-            <artifactId>viarewind-all</artifactId>
+            <artifactId>ViaRewind</artifactId>
             <version>1.5.3</version>
         </dependency>
         <dependency>

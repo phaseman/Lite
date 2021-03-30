@@ -181,8 +181,8 @@ public class ClickUI extends UIScreen {
         }
 
         // update the first buttons color
-        selectionPanel.getContainer().get(0).ifPresent(element -> element.background =
-                ColorUtil.darken(theme.windowColors.background, 45).getRGB());
+        selectionPanel.getContainer().get(0).background =
+                ColorUtil.darken(theme.windowColors.background, 45).getRGB();
 
         // apply movement processor flag so it cant move on the selection items
         window.callback = this::canMoveWindow;
@@ -202,9 +202,7 @@ public class ClickUI extends UIScreen {
 
         settingsPanel.setItemMargin(8);
 
-        modulesPanel.getContainer().get(moduleCurrent).ifPresent(module -> {
-            addSettings(((ModuleButton)module).getModule());
-        });
+        addSettings(((ModuleButton) modulesPanel.getContainer().get(moduleCurrent)).getModule());
 
         window.getPanel().add(settingsPanel);
     }
@@ -254,16 +252,14 @@ public class ClickUI extends UIScreen {
 
         Lite.SETTING_FACTORY.get(module).settings.forEach(this::addSetting);
 
-        if (module.getItems().size() > 0) {
-            module.getCurrentMode().ifPresent(currentMode -> {
-                Map<ModuleMode<?>, List<Setting>> settingContainer = Lite.SETTING_FACTORY.get(module).settingManager;
-                if (settingContainer != null) {
-                    List<Setting> settings = settingContainer.get(currentMode);
-                    if (settings != null && !settings.isEmpty()) {
-                        settings.forEach(this::addSetting);
-                    }
+        if (module.getItems().size() > 0 && module.getCurrentMode() != null) {
+            Map<ModuleMode<?>, List<Setting>> settingContainer = Lite.SETTING_FACTORY.get(module).settingManager;
+            if (settingContainer != null) {
+                List<Setting> settings = settingContainer.get(module.getCurrentMode());
+                if (settings != null && !settings.isEmpty()) {
+                    settings.forEach(this::addSetting);
                 }
-            });
+            }
         }
     }
 
@@ -304,14 +300,12 @@ public class ClickUI extends UIScreen {
                         moduleCurrent = 0;
 
                         // add settings for current module
-                        modulesPanel.getContainer().get(moduleCurrent)
-                                .ifPresent(module -> addSettings(((ModuleButton)module).getModule()));
+                        addSettings(((ModuleButton) modulesPanel.getContainer().get(moduleCurrent)).getModule());
                     }
                 }
             });
         } else if (modulesPanel.isHovered(pos) && button == 1) {
-            modulesPanel.getContainer().filter(element -> element.isHovered(pos.clone()
-                    .add(0, modulesPanel.getScrollAmount()))).findFirst().ifPresent(element -> {
+            modulesPanel.getContainer().filter(element -> element.isHovered(pos.clone().add(0, modulesPanel.getScrollAmount()))).findFirst().ifPresent(element -> {
                 if (element instanceof ModuleButton) {
                     ModuleButton moduleButton = (ModuleButton) element;
 

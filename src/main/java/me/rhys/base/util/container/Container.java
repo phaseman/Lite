@@ -5,7 +5,6 @@ import lombok.Setter;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -57,13 +56,12 @@ public class Container<T> {
      * @return the item at that index
      */
 
-    public Optional<T> get(int index) {
-        if(items.size() > index) {
-            return Optional.of(items.get(index));
-        } else if(items.size() > 0) {
-            return Optional.of(items.get(0));
+    public T get(int index) {
+        try {
+            return items.get(index);
+        } catch (Exception e) {
+            return items.get(0);
         }
-        return Optional.empty();
     }
 
     /**

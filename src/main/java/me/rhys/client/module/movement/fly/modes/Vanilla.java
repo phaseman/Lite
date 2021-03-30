@@ -18,6 +18,9 @@ public class Vanilla extends ModuleMode<Fly> {
     @Name("Ground Spoof")
     public boolean groundSpoof = false;
 
+    @Name("PositionY Ground")
+    public boolean positionGround = false;
+
     public Vanilla(String name, Fly parent) {
         super(name, parent);
     }
@@ -25,6 +28,10 @@ public class Vanilla extends ModuleMode<Fly> {
     @EventTarget
     void onMotion(PlayerMotionEvent event) {
         event.setOnGround(this.groundSpoof);
+
+        if (this.positionGround) {
+            event.getPosition().setY(Math.round(event.getPosition().getY()));
+        }
     }
 
     @EventTarget

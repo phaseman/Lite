@@ -1,6 +1,5 @@
 package me.rhys.client.ui.click.element.dropdown;
 
-import me.rhys.base.module.ModuleMode;
 import me.rhys.client.Manager;
 import me.rhys.client.ui.click.element.button.ModuleButton;
 import me.rhys.base.module.Module;
@@ -14,13 +13,10 @@ public class ModeDropDown extends DropDownButton {
     private final Module module;
 
     public ModeDropDown(Module module, Vec2f offset, int width, int height) {
-        super(offset, width, height, module.getCurrentMode().map(ModuleMode::getName).orElse("null"));
+        super(offset, width, height, module.getCurrentMode().getName());
         this.module = module;
 
-        module.getItems().stream().filter(moduleMode -> !moduleMode.getName()
-                .equalsIgnoreCase(module.getCurrentMode().map(ModuleMode::getName).orElse("null"))
-        ).sorted(Comparator.comparingInt(value -> (int) value.getName().charAt(0)))
-                .forEachOrdered(moduleMode -> items.add(moduleMode.getName()));
+        module.getItems().stream().filter(moduleMode -> !moduleMode.getName().equalsIgnoreCase(module.getCurrentMode().getName())).sorted(Comparator.comparingInt(value -> (int) value.getName().charAt(0))).forEachOrdered(moduleMode -> items.add(moduleMode.getName()));
     }
 
     @Override
@@ -31,8 +27,7 @@ public class ModeDropDown extends DropDownButton {
 
             module.setCurrentMode(label);
 
-            Manager.UI.CLICK.modulesPanel.getContainer().get(Manager.UI.CLICK.moduleCurrent)
-                    .ifPresent(element -> Manager.UI.CLICK.addSettings(((ModuleButton)element).getModule()));
+            Manager.UI.CLICK.addSettings(((ModuleButton) Manager.UI.CLICK.modulesPanel.getContainer().get(Manager.UI.CLICK.moduleCurrent)).getModule());
         }
     }
 

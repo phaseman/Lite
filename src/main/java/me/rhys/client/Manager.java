@@ -21,7 +21,7 @@ import me.rhys.client.module.movement.speed.Speed;
 import me.rhys.client.module.movement.step.Step;
 import me.rhys.client.module.player.InventoryMove;
 import me.rhys.client.module.player.NoRotate;
-import me.rhys.client.module.player.PingSpoof;
+import me.rhys.client.module.player.pingspoof.PingSpoof;
 import me.rhys.client.module.player.Timer;
 import me.rhys.client.module.player.disabler.Disabler;
 import me.rhys.client.module.player.nofall.NoFall;

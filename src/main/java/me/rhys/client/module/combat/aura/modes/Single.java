@@ -17,11 +17,11 @@ public class Single extends ModuleMode<Aura> {
     @EventTarget
     void onUpdate(PlayerUpdateEvent event) {
         if (parent.lockView && parent.target != null) {
-            Vec2f rotation = RotationUtil.getRotations(parent.target);
-            if(parent.currentRotation == null) parent
+            Vec2f rotation = parent.getRotations(parent.target);
+            if (parent.currentRotation == null) parent
                     .currentRotation = new Vec2f(mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch);
 
-            if(parent.smoothness > 0f) {
+            if (parent.smoothness > 0f) {
                 float yaw = RotationUtil.updateYawRotation(parent.currentRotation.x, rotation.x,
                         Math.max(1, 180 * (1 - parent.smoothness / 100)));
                 float pitch = RotationUtil.updatePitchRotation(parent.currentRotation.y, rotation.y,
@@ -33,7 +33,7 @@ public class Single extends ModuleMode<Aura> {
                 parent.currentRotation = rotation;
             }
 
-            if(parent.minecraftRotation) rotation = RotationUtil.clampRotation(rotation);
+            if (parent.roundingType == Aura.RoundingType.MINECRAFT) rotation = RotationUtil.clampRotation(rotation);
 
             mc.thePlayer.rotationYaw = rotation.getVecX();
             mc.thePlayer.rotationPitch = rotation.getVecY();
@@ -42,7 +42,8 @@ public class Single extends ModuleMode<Aura> {
 
     @EventTarget
     void onMotion(PlayerMotionEvent event) {
-        if (parent.target != null && event.getType() == (!parent.post ? Event.Type.PRE : Event.Type.POST)) {
+        if (parent.target != null && event.getType() == (parent.attackMethod == Aura.AttackMethod.PRE ?
+                Event.Type.PRE : Event.Type.POST)) {
             parent.swing(parent.target);
 
             if (!parent.lockView) {

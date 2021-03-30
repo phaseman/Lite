@@ -14,6 +14,7 @@ public class ClickGui extends Module {
 
     public ClickGui(String name, String description, Category category, int keyCode) {
         super(name, description, category, keyCode);
+        setHidden(true);
     }
 
     @Override

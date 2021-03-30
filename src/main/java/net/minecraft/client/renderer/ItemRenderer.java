@@ -372,7 +372,7 @@ public class ItemRenderer
                         Animations animations = (Animations) Lite.MODULE_FACTORY.findByClass(Animations.class);
 
                         if (animations.getData().isEnabled()) {
-                            switch (animations.getCurrentMode().map(ModuleMode::getName).orElse("1.7")) {
+                            switch (animations.getCurrentMode().getName()) {
                                 case "1.7": {
                                     this.transformFirstPersonItemBlock2(f, f1);
                                     this.func_178103_d2();
