@@ -93,7 +93,11 @@ public class SettingFactory extends MapContainer<Module, SettingFactory.SettingC
         }
 
         public Setting getModeSetting(String mode, String setting) {
-            return Objects.requireNonNull(getModeSettings(mode)).stream().filter(s -> s.getName().equalsIgnoreCase(setting)).findFirst().orElse(null);
+            try {
+                return Objects.requireNonNull(getModeSettings(mode)).stream().filter(s -> s.getName().equalsIgnoreCase(setting)).findFirst().orElse(null);
+            } catch (Exception ignored) {
+                return null;
+            }
         }
 
         public List<Setting> getModeSettings(String mode) {
@@ -105,7 +109,5 @@ public class SettingFactory extends MapContainer<Module, SettingFactory.SettingC
 
             return new ArrayList<>(settingManager.get(moduleMode));
         }
-
     }
-
 }

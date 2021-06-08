@@ -15,7 +15,10 @@ public class Fly extends Module {
     public Fly(String name, String description, Category category, int keyCode) {
         super(name, description, category, keyCode);
 
-        add(new Vanilla("Vanilla", this));
+        add(
+                new Vanilla("Vanilla", this),
+                new Verus("Verus", this)
+        );
     }
 
 
