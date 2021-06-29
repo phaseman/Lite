@@ -95,6 +95,7 @@ public abstract class EntityLivingBase extends Entity
      * Only relevant when limbYaw is not 0(the entity is moving). Influences where in its swing legs and arms currently
      * are.
      */
+    public float renderPitchRotation, prevRenderPitchRotation;
     public float limbSwing;
     public int maxHurtResistantTime = 20;
     public float prevCameraPitch;
@@ -384,6 +385,7 @@ public abstract class EntityLivingBase extends Entity
         this.prevRenderYawOffset = this.renderYawOffset;
         this.prevRotationYawHead = this.rotationYawHead;
         this.prevRotationYaw = this.rotationYaw;
+        this.prevRenderPitchRotation = this.renderPitchRotation;
         this.prevRotationPitch = this.rotationPitch;
         this.worldObj.theProfiler.endSection();
     }
@@ -1957,6 +1959,7 @@ public abstract class EntityLivingBase extends Entity
             double d3 = MathHelper.wrapAngleTo180_double(this.newRotationYaw - (double)this.rotationYaw);
             this.rotationYaw = (float)((double)this.rotationYaw + d3 / (double)this.newPosRotationIncrements);
             this.rotationPitch = (float)((double)this.rotationPitch + (this.newRotationPitch - (double)this.rotationPitch) / (double)this.newPosRotationIncrements);
+            this.renderPitchRotation = this.rotationPitch;
             --this.newPosRotationIncrements;
             this.setPosition(d0, d1, d2);
             this.setRotation(this.rotationYaw, this.rotationPitch);

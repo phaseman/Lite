@@ -425,6 +425,19 @@ public class EntityPlayerSP extends AbstractClientPlayer {
         this.posY = cache.getY();
         this.posZ = cache.getZ();
         this.onGround = groundCache;
+
+        this.updateRotations(motionEvent);
+    }
+
+    void updateRotations(PlayerMotionEvent event) {
+        if (event.getPosition().getYaw() != mc.thePlayer.rotationYaw) {
+            mc.thePlayer.renderYawOffset = event.getPosition().getYaw();
+            mc.thePlayer.rotationYawHead = event.getPosition().getYaw();
+        }
+
+        if (event.getPosition().getPitch() != mc.thePlayer.rotationPitch) {
+            mc.thePlayer.renderPitchRotation = event.getPosition().getPitch();
+        }
     }
 
     /**

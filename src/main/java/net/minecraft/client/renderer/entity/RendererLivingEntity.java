@@ -121,26 +121,6 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
                 float f = this.interpolateRotation(entity.prevRenderYawOffset, entity.renderYawOffset, partialTicks);
                 float f1 = this.interpolateRotation(entity.prevRotationYawHead, entity.rotationYawHead, partialTicks);
 
-                Aura aura = (Aura) Lite.MODULE_FACTORY.findByClass(Aura.class);
-                boolean isRotationModuleEnabled = aura != null &&
-                        aura.getData().isEnabled()
-                                && aura.target != null;
-
-                if (entity.isEntityEqual(Minecraft.getMinecraft().thePlayer)
-                        && PlayerMotionEvent.position != null && isRotationModuleEnabled) {
-
-                    float currYaw = PlayerMotionEvent.position.yaw;
-                    float lastYaw;
-
-                    if (RotationUtil.lastLocation == null) {
-                        lastYaw = currYaw;
-                    } else {
-                        lastYaw = RotationUtil.lastLocation.getYaw();
-                    }
-
-                    f1 = f = lastYaw + (currYaw - lastYaw) * partialTicks;
-                }
-
                 float f2 = f1 - f;
 
                 //3d rotations
@@ -184,9 +164,12 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
                 float f5 = entity.prevLimbSwingAmount + (entity.limbSwingAmount - entity.prevLimbSwingAmount) * partialTicks;
                 float f6 = entity.limbSwing - entity.limbSwingAmount * (1.0F - partialTicks);
 
-                if (entity.isEntityEqual(Minecraft.getMinecraft().thePlayer) && PlayerMotionEvent.position != null && isRotationModuleEnabled) {
-                    f8 = PlayerMotionEvent.position.pitch;
+                if (entity == Minecraft.getMinecraft().thePlayer) {
+                    f8 = entity.prevRenderPitchRotation + (entity.renderPitchRotation - entity.prevRenderPitchRotation) * partialTicks;
+                } else {
+                    f8 = entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTicks;
                 }
+
 
                 if (entity.isChild())
                 {

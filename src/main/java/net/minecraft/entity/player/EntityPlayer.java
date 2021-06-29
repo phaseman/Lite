@@ -596,6 +596,7 @@ public abstract class EntityPlayer extends EntityLivingBase
      */
     public void onLivingUpdate()
     {
+        renderPitchRotation = rotationPitch;
         if (this.flyToggleTimer > 0)
         {
             --this.flyToggleTimer;
