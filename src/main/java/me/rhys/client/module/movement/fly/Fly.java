@@ -17,7 +17,9 @@ public class Fly extends Module {
 
         add(
                 new Vanilla("Vanilla", this),
-                new Verus("Verus", this)
+                new Verus("Verus", this),
+                new Packet("Packet", this),
+                new Notation("Notation", this)
         );
     }
 

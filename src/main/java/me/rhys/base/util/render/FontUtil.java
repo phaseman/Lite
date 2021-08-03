@@ -1,8 +1,13 @@
 package me.rhys.base.util.render;
 
+import me.rhys.base.Lite;
+import me.rhys.base.font.Fonts;
 import me.rhys.base.util.vec.Vec2f;
+import me.rhys.client.module.render.HUD;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+
+import java.util.Objects;
 
 public class FontUtil {
 
@@ -12,7 +17,11 @@ public class FontUtil {
     }
 
     public static void drawString(String str, float x, float y, int color) {
-        fontRenderer.drawString(str, x, y, color);
+        if (getType() == HUD.Fonts.MINECRAFT) {
+            fontRenderer.drawString(str, x, y, color);
+        } else {
+            typeToFont().drawString(str, new Vec2f(x, y), color);
+        }
     }
 
     public static void drawString(String str, Vec2f pos, int color) {
@@ -28,7 +37,11 @@ public class FontUtil {
     }
 
     public static void drawStringWithShadow(String str, float x, float y, int color) {
-        fontRenderer.drawStringWithShadow(str, x, y, color);
+        if (getType() == HUD.Fonts.MINECRAFT) {
+            fontRenderer.drawStringWithShadow(str, x, y, color);
+        } else {
+            typeToFont().drawStringWithShadow(str, x, y, color);
+        }
     }
 
     public static void drawStringWithShadow(String str, Vec2f pos, int color) {
@@ -44,11 +57,34 @@ public class FontUtil {
     }
 
     public static float getStringWidth(String str) {
-        return fontRenderer.getStringWidth(str);
+        if (getType() == HUD.Fonts.MINECRAFT) {
+            return fontRenderer.getStringWidth(str);
+        } else {
+            return typeToFont().getStringWidth(str);
+        }
     }
 
     public static float getFontHeight() {
-        return fontRenderer.FONT_HEIGHT;
+        if (getType() == HUD.Fonts.MINECRAFT) {
+            return fontRenderer.FONT_HEIGHT;
+        } else {
+            return typeToFont().getHeight();
+        }
     }
 
+    public static me.rhys.base.font.FontRenderer typeToFont() {
+        switch (getType()) {
+            //TODO: add more..
+
+            case APPLE: {
+                return Fonts.INSTANCE.getApple();
+            }
+        }
+
+        return Fonts.INSTANCE.getApple();
+    }
+
+    private static HUD.Fonts getType() {
+        return ((HUD) Lite.MODULE_FACTORY.findByClass(HUD.class)).font;
+    }
 }

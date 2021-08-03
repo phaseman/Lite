@@ -9,9 +9,11 @@ import me.rhys.base.module.data.Category;
 import me.rhys.base.module.setting.manifest.Clamp;
 import me.rhys.base.module.setting.manifest.Name;
 import me.rhys.base.util.MathUtil;
+import me.rhys.base.util.render.ColorUtil;
 import me.rhys.base.util.render.FontUtil;
 import me.rhys.base.util.render.RenderUtil;
 import me.rhys.base.util.vec.Vec2f;
+import me.rhys.base.util.vec.Vec4f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.EnumChatFormatting;
 
@@ -22,8 +24,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class HUD extends Module {
 
-    @Name("Rainbow")
-    public boolean rainbow = false;
+    @Name("Color Type")
+    public ColorMode colorMode = ColorMode.STATIC;
 
     @Name("Rainbow type")
     public RainbowType rainbowType = RainbowType.NORMAL;
@@ -39,7 +41,7 @@ public class HUD extends Module {
 
     @Name("Scale")
     @Clamp(min = 0.1f, max = 2f)
-    public float scale = 1f;
+    public double scale = 1f;
 
     @Name("R")
     @Clamp(min = 0, max = 255)
@@ -60,6 +62,25 @@ public class HUD extends Module {
     @Clamp(min = 0, max = 300)
     public int scoreboardY = 75;
 
+    @Name("Fade To R")
+    @Clamp(min = 0, max = 255)
+    public int fadeToR = 52;
+
+    @Name("Fade To G")
+    @Clamp(min = 0, max = 255)
+    public int fadeToG = 152;
+
+    @Name("Fade To B")
+    @Clamp(min = 0, max = 255)
+    public int fadeToB = 219;
+
+    @Name("Fade Speed")
+    @Clamp(min = 0, max = 90)
+    public int fadeSpeed = 3;
+
+    @Name("Font")
+    public Fonts font = Fonts.APPLE;
+
     public int rCopy = r, gCopy = g, bCopy = b;
     private boolean rBack, gBack, bBack;
     private long lastR, lastG, lastB, nextRandomR, nextRandomG, nextRandomB;
@@ -72,7 +93,7 @@ public class HUD extends Module {
     @EventTarget
     public void onUpdate(PlayerUpdateEvent event) {
 
-        if (rainbow && rainbowType == RainbowType.INCREASE) {
+        if (this.colorMode == ColorMode.RAINBOW && rainbowType == RainbowType.INCREASE) {
             //R
 
             if ((System.currentTimeMillis() - lastR) > nextRandomR) {
@@ -151,10 +172,11 @@ public class HUD extends Module {
 
     @EventTarget
     void renderGameOverlay(RenderGameOverlayEvent event) {
+        if (mc.gameSettings.showDebugInfo) return;
 
         // draw watermark
         if (waterMark) {
-            mc.fontRendererObj.drawStringWithShadow(
+            FontUtil.drawStringWithShadow(
                     Lite.MANIFEST.getName().toUpperCase(Locale.ROOT).charAt(0)
                             + EnumChatFormatting.WHITE.toString()
                             + Lite.MANIFEST.getName().substring(1),
@@ -206,15 +228,42 @@ public class HUD extends Module {
     }
 
     public int getColor(int offset, int rainbowOffset) {
-        if (rainbow && rainbowType == RainbowType.NORMAL) {
-            return Color.HSBtoRGB(((Minecraft.getSystemTime() + (10 * (Minecraft.getMinecraft().thePlayer.ticksExisted + offset * rainbowOffset))) % 5000F) / 5000F, 1, 1);
+        if (this.colorMode == ColorMode.RAINBOW && rainbowType == RainbowType.NORMAL) {
+            return Color.HSBtoRGB(((Minecraft.getSystemTime() + (10 * (Minecraft.getMinecraft().thePlayer
+                    .ticksExisted + offset * rainbowOffset))) % 5000F) / 5000F, 1, 1);
+        } else if (this.colorMode == ColorMode.FADE) {
+            int speed = (1000 * (this.fadeSpeed > 0 ? this.fadeSpeed : 1));
+            return fade((System.currentTimeMillis() + (offset * (150 - 3))) % speed / (speed / 2.0f));
         } else {
             return new Color(rCopy, gCopy, bCopy).getRGB();
         }
     }
 
+    public int fade(float time) {
+        if (time > 1) time = 1 - time % 1;
+
+        Vec4f from = ColorUtil.getColor(new Color(this.r, this.g, this.b).getRGB());
+        Vec4f to = ColorUtil.getColor(new Color(this.fadeToR, this.fadeToG, this.fadeToB).getRGB());
+
+        Vec4f diff = to.clone().sub(from);
+        Vec4f newColor = from.clone().add(diff.clone().mul(time));
+
+        return ColorUtil.getColor(newColor);
+    }
+
     public enum RainbowType {
         NORMAL,
-        INCREASE
+        INCREASE,
+    }
+
+    public enum ColorMode {
+        STATIC,
+        RAINBOW,
+        FADE
+    }
+
+    public enum Fonts {
+        MINECRAFT,
+        APPLE
     }
 }

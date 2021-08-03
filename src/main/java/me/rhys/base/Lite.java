@@ -1,6 +1,7 @@
 package me.rhys.base;
 
 import com.github.creeper123123321.viafabric.ViaFabric;
+import me.rhys.base.font.Fonts;
 import me.rhys.client.Manager;
 import me.rhys.base.client.ClientManifest;
 import me.rhys.base.command.CommandFactory;
@@ -94,6 +95,9 @@ public class Lite {
 
         // load in all the data from files
         FILE_FACTORY.load();
+
+        // setup fonts
+        Fonts.INSTANCE.setup();
     }
 
     public static void shutdown() {

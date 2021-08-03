@@ -2,30 +2,45 @@ package me.rhys.client.module.player.scaffold;
 
 import me.rhys.base.event.data.EventTarget;
 import me.rhys.base.event.impl.player.SafeWalkEvent;
+import me.rhys.base.event.impl.render.RenderGameOverlayEvent;
 import me.rhys.base.module.Module;
 import me.rhys.base.module.data.Category;
+import me.rhys.base.module.setting.manifest.Clamp;
 import me.rhys.base.module.setting.manifest.Name;
+import me.rhys.base.util.MathUtil;
+import me.rhys.base.util.Timer;
+import me.rhys.base.util.render.FontUtil;
+import me.rhys.base.util.vec.Vec2f;
 import me.rhys.base.util.vec.Vec3f;
+import me.rhys.client.module.player.scaffold.modes.Expand;
 import me.rhys.client.module.player.scaffold.modes.NCP;
+import me.rhys.client.module.player.scaffold.modes.Verus;
 import net.minecraft.block.*;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemAnvilBlock;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.C0APacketAnimation;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.*;
+
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Scaffold extends Module {
     public Scaffold(String name, String description, Category category, int keyCode) {
         super(name, description, category, keyCode);
-        add(new NCP("NCP", this));
+        add(
+                new NCP("NCP", this),
+                new Verus("Verus", this),
+                new Expand("Expand", this)
+        );
     }
 
     @Name("Swing")
     public boolean swing = false;
+
+    @Name("Sprint")
+    public boolean sprint = true;
 
     @Name("Tower")
     public boolean tower = true;
@@ -36,28 +51,90 @@ public class Scaffold extends Module {
     @Name("SafeWalk")
     public boolean safeWalk = true;
 
+    @Name("Delay")
+    @Clamp(min = 0, max = 9000)
+    public int delay = 0;
+
+    public final Timer delayTimer = new Timer();
+
+    @Override
+    public void onEnable() {
+        this.delayTimer.reset();
+    }
+
+    @EventTarget
+    void onRender(RenderGameOverlayEvent event) {
+        if (this.showAmount) {
+            int amount = getBlockCount();
+            String str = EnumChatFormatting.GRAY +  "Blocks: " + (amount > 60 ? EnumChatFormatting.GREEN
+                    : EnumChatFormatting.RED) + amount;
+
+            FontUtil.drawStringWithShadow(str, new Vec2f(
+                    (event.getWidth() - FontUtil.typeToFont().getStringWidth(str)) / 2.0F,
+                    (event.getHeight() - FontUtil.typeToFont().getHeight()) / 2.0F - 15), -1);
+        }
+    }
+
     @EventTarget
     void onSafeWalk(SafeWalkEvent event) {
         event.setCancelled(this.safeWalk);
     }
 
-    public boolean placeBlock(BlockPos blockPos, EnumFacing facing, int slot, boolean swing) {
-        BlockPos offset = blockPos.offset(facing);
+    public BlockEntry findExpand(Vec3 offset3, int expand) {
         EnumFacing[] invert = new EnumFacing[]{EnumFacing.UP, EnumFacing.DOWN, EnumFacing.SOUTH,
                 EnumFacing.NORTH, EnumFacing.EAST, EnumFacing.WEST};
-        if (rayTrace(mc.thePlayer.getLook(0.0f), this.getPositionByFace(offset,
-                invert[facing.ordinal()]))) {
-            ItemStack stack = mc.thePlayer.inventory.getStackInSlot(slot);
-            Vec3f hitVec = (new Vec3f(blockPos)).add(0.5f, 0.5f, 0.5f)
-                    .add((new Vec3f(facing.getDirectionVec())).scale(0.5f));
-            if (mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, stack,
-                    blockPos, facing, new Vec3(hitVec.x, hitVec.y, hitVec.z))) {
-                if (swing) {
-                    mc.thePlayer.swingItem();
-                } else {
-                    mc.thePlayer.sendQueue.addToSendQueue(new C0APacketAnimation());
+        BlockPos position = new BlockPos(mc.thePlayer.getPositionVector().add(offset3))
+                .offset(EnumFacing.DOWN);
+        if (!(mc.theWorld.getBlockState(position).getBlock() instanceof BlockAir))
+            return null;
+        for (EnumFacing facing : EnumFacing.values()) {
+            BlockPos offset = position.offset(facing);
+            if (mc.theWorld.getBlockState(offset).getBlock() instanceof BlockAir ||
+                    !rayTrace(mc.thePlayer.getLook(0.0f),
+                            this.getPositionByFace(offset, invert[facing.ordinal()])))
+                continue;
+            return new BlockEntry(offset, invert[facing.ordinal()]);
+        }
+        for (int i = 0; i < expand; i++) {
+            BlockPos[] offsets = new BlockPos[]{new BlockPos(-i, 0, 0), new BlockPos(i, 0, 0),
+                    new BlockPos(0, 0, -i), new BlockPos(0, 0, i)};
+            for (BlockPos offset : offsets) {
+                BlockPos offsetPos = position.add(offset.getX(), 0, offset.getZ());
+                if (!(mc.theWorld.getBlockState(offsetPos).getBlock() instanceof BlockAir)) continue;
+                for (EnumFacing facing : EnumFacing.values()) {
+                    BlockPos offset2 = offsetPos.offset(facing);
+                    if (mc.theWorld.getBlockState(offset2).getBlock() instanceof BlockAir ||
+                            !rayTrace(mc.thePlayer.getLook(0.0f),
+                                    this.getPositionByFace(offset, invert[facing.ordinal()])))
+                        continue;
+                    return new BlockEntry(offset2, invert[facing.ordinal()]);
                 }
-                return true;
+            }
+        }
+        return null;
+    }
+
+    public boolean placeBlock(BlockPos blockPos, EnumFacing facing, int slot, boolean swing) {
+        if (this.delayTimer.hasReached(this.delay)) {
+            this.delayTimer.reset();
+
+            BlockPos offset = blockPos.offset(facing);
+            EnumFacing[] invert = new EnumFacing[]{EnumFacing.UP, EnumFacing.DOWN, EnumFacing.SOUTH,
+                    EnumFacing.NORTH, EnumFacing.EAST, EnumFacing.WEST};
+            if (rayTrace(mc.thePlayer.getLook(0.0f), this.getPositionByFace(offset,
+                    invert[facing.ordinal()]))) {
+                ItemStack stack = mc.thePlayer.inventory.getStackInSlot(slot);
+                Vec3f hitVec = (new Vec3f(blockPos)).add(0.5f, 0.5f, 0.5f)
+                        .add((new Vec3f(facing.getDirectionVec())).scale(0.5f));
+                if (mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, stack,
+                        blockPos, facing, new Vec3(hitVec.x, hitVec.y, hitVec.z))) {
+                    if (swing) {
+                        mc.thePlayer.swingItem();
+                    } else {
+                        mc.thePlayer.sendQueue.addToSendQueue(new C0APacketAnimation());
+                    }
+                    return true;
+                }
             }
         }
         return false;
@@ -93,6 +170,46 @@ public class Scaffold extends Module {
         }
 
         return -1;
+    }
+
+    public int getBlockCount() {
+        AtomicInteger count = new AtomicInteger(0);
+        player().inventoryContainer.getInventory().stream()
+                .filter(Objects::nonNull).filter(itemStack ->
+                (itemStack.getItem() instanceof ItemBlock)
+                        && isPlaceable(itemStack)).forEach(itemStack ->
+                count.addAndGet(itemStack.stackSize));
+        return count.get();
+    }
+
+    public boolean placeBlockVerus(BlockPos blockPos, EnumFacing facing, int slot, boolean swing) {
+        if (this.delayTimer.hasReached(this.delay)) {
+            this.delayTimer.reset();
+
+            BlockPos offset = blockPos.offset(facing);
+            EnumFacing[] invert = new EnumFacing[]{EnumFacing.UP, EnumFacing.DOWN, EnumFacing.SOUTH,
+                    EnumFacing.NORTH, EnumFacing.EAST, EnumFacing.WEST};
+            if (rayTrace(mc.thePlayer.getLook(0.0f), this.getPositionByFace(offset,
+                    invert[facing.ordinal()]))) {
+                ItemStack stack = mc.thePlayer.inventory.getStackInSlot(slot);
+
+                float f = MathUtil.randFloat(.3f, .5f);
+
+                Vec3f hitVec = (new Vec3f(blockPos)).add(f, f, f)
+                        .add((new Vec3f(facing.getDirectionVec())).scale(f));
+                if (mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld,
+                        stack, blockPos, facing, new Vec3(hitVec.x, hitVec.y, hitVec.z))) {
+                    if (swing) {
+                        mc.thePlayer.swingItem();
+                    } else {
+                        mc.thePlayer.sendQueue.addToSendQueue(new C0APacketAnimation());
+                    }
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     public Vec3 getPositionByFace(BlockPos position, EnumFacing facing) {

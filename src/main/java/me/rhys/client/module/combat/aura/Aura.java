@@ -241,6 +241,16 @@ public class Aura extends Module {
                 break;
             }
 
+            case MODULO2: {
+                float sensitivity = Minecraft.getMinecraft().gameSettings.mouseSensitivity;
+                float f = sensitivity * 0.6F + 0.2F;
+                float f2 = f * f * f * 1.2F;
+
+                yaw -= yaw % (f2 / 4);
+                pitch -= pitch % (f2 / 4);
+                break;
+            }
+
             case ROUND: {
                 yaw = (float) MathUtil.preciseRound(yaw, 1);
                 pitch = (float) MathUtil.preciseRound(pitch, 1);
@@ -265,6 +275,7 @@ public class Aura extends Module {
         NONE,
         MINECRAFT,
         MODULO,
+        MODULO2,
         ROUND,
     }
 

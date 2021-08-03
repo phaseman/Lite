@@ -45,6 +45,10 @@ public class NCP extends ModuleMode<Scaffold> {
             Vec2f rotation = RotationUtil.getRotations(parent.getPositionByFace(this.lastBlockEntry.getPosition(),
                     this.lastBlockEntry.getFacing()));
 
+            if (mc.thePlayer.isPlayerMoving()) {
+                getMc().thePlayer.setSprinting(parent.sprint);
+            }
+
             event.getPosition().setRotation(rotation);
         }
 

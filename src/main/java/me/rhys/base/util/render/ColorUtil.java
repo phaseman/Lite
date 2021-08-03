@@ -2,6 +2,7 @@ package me.rhys.base.util.render;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import me.rhys.base.util.vec.Vec4f;
 
 import java.awt.*;
 
@@ -14,6 +15,19 @@ public class ColorUtil {
     public static Color darken(int color, int percent) {
         int[] values = getColorsI(color);
         return darken(values[0], values[1], values[2], percent);
+    }
+
+    public static Vec4f getColor(int color) {
+        return new Vec4f(
+                (color >> 16 & 255) / 255.0f,
+                (color >> 8 & 255) / 255.0f,
+                (color & 255) / 255.0f,
+                (color >> 24 & 255) / 255.0f
+        );
+    }
+
+    public static int getColor(Vec4f color) {
+        return new java.awt.Color(color.x, color.y, color.z, color.w).getRGB();
     }
 
     public static int getColor(int r, int g, int b) {

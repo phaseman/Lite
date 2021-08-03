@@ -5,6 +5,7 @@ import me.rhys.base.event.impl.render.RenderNameTagEvent;
 import me.rhys.base.module.Module;
 import me.rhys.base.module.data.Category;
 import me.rhys.base.module.setting.manifest.Name;
+import me.rhys.base.util.render.FontUtil;
 import me.rhys.base.util.render.RenderUtil;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.gui.FontRenderer;
@@ -72,7 +73,7 @@ public class Nametags extends Module {
             yOffset = -10;
         }
 
-        int width = fontrenderer.getStringWidth(name) / 2;
+        int width = (int) (FontUtil.getStringWidth(name) / 2);
 
         GlStateManager.disableTexture2D();
 
@@ -159,11 +160,11 @@ public class Nametags extends Module {
             GlStateManager.popMatrix();
         }
 
-        fontrenderer.drawStringWithShadow(name, -fontrenderer.getStringWidth(name) / 2.0F, yOffset, -1);
+        FontUtil.drawStringWithShadow(name, -FontUtil.getStringWidth(name) / 2.0F, yOffset, -1);
 
         GlStateManager.enableDepth();
         GlStateManager.depthMask(true);
-        fontrenderer.drawStringWithShadow(name, -fontrenderer.getStringWidth(name) / 2.0F, yOffset, -1);
+        FontUtil.drawStringWithShadow(name, -FontUtil.getStringWidth(name) / 2.0F, yOffset, -1);
 
         GlStateManager.enableLighting();
         GlStateManager.disableBlend();

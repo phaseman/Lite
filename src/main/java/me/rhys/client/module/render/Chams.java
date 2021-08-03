@@ -37,12 +37,12 @@ public class Chams extends Module {
                 GlStateManager.disableLighting();
                 GlStateManager.enableBlend();
                 GlStateManager.blendFunc(770, 772);
-                float[] color = RenderUtil.getColors((hud.rainbow
+                float[] color = RenderUtil.getColors((hud.colorMode == HUD.ColorMode.RAINBOW
                         ? Color.getHSBColor(((Minecraft.getSystemTime() + (10 * Minecraft.getMinecraft().thePlayer.ticksExisted)) % 5000F) / 5000F,
                         (float) 1, (float) 0.20).getRGB() : new Color(52, 189, 235).getRGB()));
 
                 if (mc.thePlayer.canEntityBeSeen(event.getEntity())) {
-                    if (!hud.rainbow) {
+                    if (hud.colorMode != HUD.ColorMode.RAINBOW) {
                         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
                     }
                     GlStateManager.color(color[0], color[1], color[2]);

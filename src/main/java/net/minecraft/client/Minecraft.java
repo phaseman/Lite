@@ -136,7 +136,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
     /**
      * The RenderEngine instance used by Minecraft
      */
-    private TextureManager renderEngine;
+    public TextureManager renderEngine;
 
     /**
      * Set to 'this' in Minecraft constructor; used by some settings get methods
@@ -275,12 +275,12 @@ public class Minecraft implements IThreadListener, IPlayerUsage {
      * Keeps track of how long the debug crash keycombo (F3+C) has been pressed for, in order to crash after 10 seconds.
      */
     private long debugCrashKeyPressTime = -1L;
-    private IReloadableResourceManager mcResourceManager;
+    public IReloadableResourceManager mcResourceManager;
     private final IMetadataSerializer metadataSerializer_ = new IMetadataSerializer();
     private final List<IResourcePack> defaultResourcePacks = Lists.<IResourcePack>newArrayList();
     private final DefaultResourcePack mcDefaultResourcePack;
     private ResourcePackRepository mcResourcePackRepository;
-    private LanguageManager mcLanguageManager;
+    public LanguageManager mcLanguageManager;
     private IStream stream;
     private Framebuffer framebufferMc;
     private TextureMap textureMapBlocks;

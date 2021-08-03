@@ -5,6 +5,7 @@ import net.minecraft.potion.Potion;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -36,6 +37,16 @@ public class MathUtil {
         return min + random.nextDouble() * (max - min);
     }
 
+    @SuppressWarnings("UnnecessaryCallToStringValueOf")
+    public static float trimFloat(int degree, float d) {
+        String format = "#.#";
+        for (int i = 1; i < degree; ++i) {
+            format = String.valueOf(format) + "#";
+        }
+
+        DecimalFormat twoDForm = new DecimalFormat(format);
+        return Float.parseFloat(twoDForm.format(d).replaceAll(",", "."));
+    }
 
     public static float setRandom(final float min, final float max) {
         Random random = new Random();

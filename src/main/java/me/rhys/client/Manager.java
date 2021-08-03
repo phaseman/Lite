@@ -13,6 +13,7 @@ import me.rhys.client.module.combat.criticals.Criticals;
 import me.rhys.client.module.combat.velocity.Velocity;
 import me.rhys.client.module.ghost.Reach;
 import me.rhys.client.module.ghost.autoclicker.AutoClicker;
+import me.rhys.client.module.movement.CustomSpeed;
 import me.rhys.client.module.movement.Sprint;
 import me.rhys.client.module.movement.fly.Fly;
 import me.rhys.client.module.movement.noslow.NoSlow;
@@ -95,7 +96,8 @@ public class Manager {
 
                 new Reach("Reach", "Extend Reach", Category.GHOST, Keyboard.KEY_NONE),
                 new AutoClicker("AutoClicker", "Clicks for you", Category.GHOST, Keyboard.KEY_NONE),
-                new Scaffold("Scaffold", "Places blocks for you", Category.PLAYER, Keyboard.KEY_NONE)
+                new Scaffold("Scaffold", "Places blocks for you", Category.PLAYER, Keyboard.KEY_NONE),
+                new CustomSpeed("CustomSpeed", "Custom speed bypasses?", Category.MOVEMENT, Keyboard.KEY_NONE)
         );
     }
 

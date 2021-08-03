@@ -4,6 +4,7 @@ import me.rhys.base.event.impl.player.PlayerMoveEvent;
 import me.rhys.base.module.Module;
 import me.rhys.base.module.data.Category;
 import me.rhys.client.module.movement.speed.mode.BHop;
+import me.rhys.client.module.movement.speed.mode.MinecraftPort;
 import me.rhys.client.module.movement.speed.mode.NCP;
 import me.rhys.client.module.movement.speed.mode.YPort;
 
@@ -16,7 +17,8 @@ public class Speed extends Module {
         add(
                 new BHop("BHop", this),
                 new NCP("NCP", this),
-                new YPort("YPort", this)
+                new YPort("YPort", this),
+                new MinecraftPort("MinecraftPort", this)
         );
     }
 
