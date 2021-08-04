@@ -34,7 +34,7 @@ public class Lite {
 
     public static final CommandFactory COMMAND_FACTORY = new CommandFactory('.');
 
-    public static final ClientManifest MANIFEST = new ClientManifest("Lite", "2.0.1");
+    public static final ClientManifest MANIFEST = new ClientManifest("Lite", "2.1");
 
     public static final FriendManager FRIEND_MANAGER = new FriendManager();
 
