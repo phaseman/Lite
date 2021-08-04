@@ -180,7 +180,7 @@ public class HUD extends Module {
                     Lite.MANIFEST.getName().toUpperCase(Locale.ROOT).charAt(0)
                             + EnumChatFormatting.WHITE.toString()
                             + Lite.MANIFEST.getName().substring(1),
-                    new Vec2f(10, 15), new Color(r, g, b).getRGB());
+                    new Vec2f(10, 15), this.getColor(0, 1));
         }
 
         // draw the arraylist

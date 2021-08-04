@@ -382,11 +382,8 @@ public class ClickUI extends UIScreen {
     public void draw(Vec2f mouse, float partialTicks) {
         HUD hud = (HUD) Lite.MODULE_FACTORY.findByClass(HUD.class);
 
-        int color = (hud.colorMode == HUD.ColorMode.RAINBOW && hud.rainbowType == HUD.RainbowType.NORMAL
-                ? Color.HSBtoRGB(((Minecraft.getSystemTime() + (10 * (Minecraft.getMinecraft().thePlayer.ticksExisted + 1))) % 5000F) / 5000F, 1, 1)
-                : ColorUtil.rgba(hud.rCopy, hud.gCopy, hud.bCopy, 1.0f));
-
-        RenderUtil.drawRect(selectionPanel.pos.clone().sub(2, 0), 2, selectionPanel.getHeight(), color);
+        RenderUtil.drawRect(selectionPanel.pos.clone().sub(2, 0), 2, selectionPanel.getHeight(),
+                hud.getColor(0 ,1));
 
         RenderUtil.drawRect(displayPanel.pos.clone().add(0, displayPanel.getHeight() - 1), displayPanel.getWidth(),
                 1, ColorUtil.darken(displayPanel.background, 15).getRGB());

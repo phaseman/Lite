@@ -44,7 +44,8 @@ public class Single extends ModuleMode<Aura> {
     void onMotion(PlayerMotionEvent event) {
         if (parent.target != null && event.getType() == (parent.attackMethod == Aura.AttackMethod.PRE ?
                 Event.Type.PRE : Event.Type.POST)) {
-            parent.swing(parent.target);
+
+            parent.swing(parent.target, event);
 
             if (!parent.lockView) {
                 parent.aimAtTarget(event, parent.target);

@@ -11,6 +11,7 @@ import me.rhys.base.module.setting.manifest.Name;
 import me.rhys.base.util.MathUtil;
 import me.rhys.base.util.RotationUtil;
 import me.rhys.base.util.Timer;
+import me.rhys.base.util.entity.RayCast;
 import me.rhys.base.util.vec.Vec2f;
 import me.rhys.client.module.combat.aura.modes.Single;
 import me.rhys.client.module.combat.criticals.Criticals;
@@ -22,10 +23,12 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemSword;
 import net.minecraft.network.play.client.C02PacketUseEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
+import net.minecraft.network.play.client.C07PacketPlayerDigging;
+import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
+import net.minecraft.util.*;
 
 public class Aura extends Module {
     public Aura(String name, String description, Category category, int keyCode) {
@@ -37,10 +40,16 @@ public class Aura extends Module {
     public AttackMethod attackMethod = AttackMethod.PRE;
 
     @Name("Rounding Type")
-    public RoundingType roundingType = RoundingType.NONE;
+    public RoundingType roundingType = RoundingType.MODULO;
 
     @Name("Rotation Type")
     public RotationType rotationType = RotationType.NORMAL;
+
+    @Name("Block Type")
+    public BlockMode blockMode = BlockMode.NCP_INTERACT;
+
+    @Name("Unblock Type")
+    public UnBlockMode unBlockMode = UnBlockMode.SWING;
 
     @Name("CPS")
     @Clamp(min = 1, max = 20)
@@ -54,8 +63,14 @@ public class Aura extends Module {
     @Clamp(min = 0, max = 100)
     public float smoothness = 0f;
 
+    @Name("AutoBlock")
+    public boolean autoBlock = false;
+
     @Name("RayCheck")
     public boolean rayCheck = true;
+
+    @Name("RayCast")
+    public boolean rayCast = true;
 
     @Name("Monsters")
     public boolean monsters = false;
@@ -66,11 +81,17 @@ public class Aura extends Module {
     @Name("Invisibles")
     public boolean invisible = true;
 
+    @Name("Dead Players")
+    public boolean deadPlayers = false;
+
     @Name("KeepSprint")
     public boolean keepSprint = false;
 
     @Name("LockView")
     public boolean lockView = false;
+
+    @Name("Swing")
+    public boolean swing = true;
 
     @Name("Crack")
     public boolean crack = false;
@@ -86,6 +107,7 @@ public class Aura extends Module {
 
     public final Timer attackTimer = new Timer();
     public Vec2f currentRotation = null;
+    public boolean blocking;
 
     @Override
     public void onEnable() {
@@ -94,13 +116,21 @@ public class Aura extends Module {
 
     @Override
     public void onDisable() {
+        this.blocking = false;
         this.target = null;
-        currentRotation = null;
+        this.currentRotation = null;
     }
 
     @EventTarget
     public void onUpdate(PlayerUpdateEvent event) {
         this.target = this.findTarget();
+
+        if (this.rayCast && this.target != null && this.currentRotation != null) {
+            EntityLivingBase rayCast;
+            if ((rayCast = RayCast.rayCast(target, currentRotation.getVecX(), currentRotation.getVecY())) != null) {
+                this.target = rayCast;
+            }
+        }
 
         if (this.target != null) {
             mc.thePlayer.setSprinting(this.keepSprint);
@@ -111,7 +141,7 @@ public class Aura extends Module {
         }
     }
 
-    public EntityLivingBase findTarget() {
+    EntityLivingBase findTarget() {
         for (Entity entity : mc.theWorld.loadedEntityList) {
             if (entity != null) {
                 if (!this.isEntityValid(entity) || !(entity instanceof EntityLivingBase)) continue;
@@ -121,7 +151,7 @@ public class Aura extends Module {
         return null;
     }
 
-    private boolean isEntityValid(Entity entity) {
+    boolean isEntityValid(Entity entity) {
         if (mc.thePlayer.isEntityEqual(entity)) return false;
 
         //Checking reach distance
@@ -158,10 +188,13 @@ public class Aura extends Module {
         if (!monsters && (entity instanceof EntityMob || entity instanceof EntityVillager))
             return false;
 
+        if (!this.deadPlayers && entity.isDead)
+            return false;
+
         return monsters || entity instanceof EntityPlayer;
     }
 
-    public void doCritical() {
+    void doCritical() {
         Criticals criticals = (Criticals) Lite.MODULE_FACTORY.findByClass(Criticals.class);
 
         if (criticals.getData().isEnabled()) {
@@ -181,19 +214,88 @@ public class Aura extends Module {
         }
     }
 
-    public void swing(Entity target) {
+   public void swing(Entity target, PlayerMotionEvent playerMotionEvent) {
+        if (this.autoBlock) {
+            this.useItem(playerMotionEvent);
+        }
+
         double aps = (cps + MathUtil.randFloat(MathUtil.randFloat(1, 3), MathUtil.randFloat(3, 5)));
 
         if (this.attackTimer.hasReached(1000L / aps)) {
             this.attackTimer.reset();
-            mc.thePlayer.swingItem();
+
+            // unblock before attack
+            if (this.autoBlock && this.unBlockMode == UnBlockMode.ATTACK && this.blocking
+                    && mc.thePlayer.isBlocking()) {
+                this.blocking = false;
+                mc.thePlayer.sendQueue.addToSendQueue(new C07PacketPlayerDigging(
+                        C07PacketPlayerDigging.Action.RELEASE_USE_ITEM,
+                        BlockPos.ORIGIN,
+                        EnumFacing.DOWN
+                ));
+            }
+
+            if (this.swing) {
+                mc.thePlayer.swingItem();
+            }
+
             doCritical();
+
+            // unblock before attack
+            if (this.autoBlock && this.unBlockMode == UnBlockMode.ATTACK && this.blocking
+                    && mc.thePlayer.isBlocking()) {
+                this.blocking = false;
+                mc.thePlayer.sendQueue.addToSendQueue(new C07PacketPlayerDigging(
+                        C07PacketPlayerDigging.Action.RELEASE_USE_ITEM,
+                        BlockPos.ORIGIN,
+                        EnumFacing.DOWN
+                ));
+            }
             mc.thePlayer.sendQueue.addToSendQueue(new C02PacketUseEntity(target, C02PacketUseEntity.Action.ATTACK));
+        }
+    }
+
+    void useItem(PlayerMotionEvent event) {
+        if (this.autoBlock) {
+            if (mc.thePlayer.getHeldItem() != null && mc.thePlayer.getHeldItem().getItem() instanceof ItemSword) {
+                this.blocking = true;
+
+                switch (this.blockMode) {
+                    case NCP: {
+                        mc.playerController.syncCurrentPlayItem();
+                        ItemStack itemstack = mc.thePlayer.getHeldItem().useItemRightClick(mc.theWorld, mc.thePlayer);
+                        if (itemstack != mc.thePlayer.getHeldItem() || itemstack != null) {
+                            mc.thePlayer.inventory.mainInventory[mc.thePlayer.inventory.currentItem] = itemstack;
+                            if (itemstack.stackSize == 0)
+                                mc.thePlayer.inventory.mainInventory[mc.thePlayer.inventory.currentItem] = null;
+                        }
+                        break;
+                    }
+
+                    case NCP_INTERACT: {
+                        mc.playerController.syncCurrentPlayItem();
+                        ItemStack itemstack = mc.thePlayer.getHeldItem().useItemRightClick(mc.theWorld, mc.thePlayer);
+
+                        if (target instanceof EntityPlayer) {
+                            mc.playerController.interactWithEntitySendPacket(mc.thePlayer, this.target);
+                            target.interactAt((EntityPlayer) this.target, new Vec3(-1, -1, -1));
+                        }
+
+                        if (itemstack != mc.thePlayer.getHeldItem() || itemstack != null) {
+                            mc.thePlayer.inventory.mainInventory[mc.thePlayer.inventory.currentItem] = itemstack;
+                            if (itemstack.stackSize == 0)
+                                mc.thePlayer.inventory.mainInventory[mc.thePlayer.inventory.currentItem] = null;
+                        }
+                        break;
+                    }
+                }
+            }
         }
     }
 
     public void aimAtTarget(PlayerMotionEvent event, Entity target) {
         Vec2f rotation = getRotations(target);
+        if (rotation == null) return;
 
         if (smoothness > 0f) {
             if (currentRotation == null)
@@ -281,6 +383,18 @@ public class Aura extends Module {
 
     public enum RotationType {
         NORMAL,
-        RANDOM
+        RANDOM,
+        NONE
+    }
+
+    public enum BlockMode {
+        NCP,
+        NCP_INTERACT,
+        FAKE
+    }
+
+    public enum UnBlockMode {
+        SWING,
+        ATTACK
     }
 }

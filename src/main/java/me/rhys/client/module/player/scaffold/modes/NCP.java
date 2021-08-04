@@ -46,7 +46,7 @@ public class NCP extends ModuleMode<Scaffold> {
                     this.lastBlockEntry.getFacing()));
 
             if (mc.thePlayer.isPlayerMoving()) {
-                getMc().thePlayer.setSprinting(parent.sprint);
+                mc.thePlayer.setSprinting(parent.sprint);
             }
 
             event.getPosition().setRotation(rotation);
