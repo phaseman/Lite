@@ -28,6 +28,11 @@ public class MathUtil {
         return (double) Math.round(value * scale) / scale;
     }
 
+    public static double randOddDouble(double min, double max) {
+        if (min % 2 == 0) ++min;
+        return min + 2 * ThreadLocalRandom.current().nextDouble((max - min) / 2 + 1);
+    }
+
     public static int randomNumber(int max, int min) {
         return Math.round(min + (float) Math.random() * ((max - min)));
     }

@@ -8,6 +8,7 @@ import me.rhys.base.event.impl.init.ModuleInitializeEvent;
 import me.rhys.base.module.data.Category;
 import me.rhys.client.command.*;
 import me.rhys.client.files.AccountsFile;
+import me.rhys.client.module.combat.PVPBot;
 import me.rhys.client.module.combat.aura.Aura;
 import me.rhys.client.module.combat.criticals.Criticals;
 import me.rhys.client.module.combat.velocity.Velocity;
@@ -20,6 +21,7 @@ import me.rhys.client.module.movement.noslow.NoSlow;
 import me.rhys.client.module.movement.sneak.Sneak;
 import me.rhys.client.module.movement.speed.Speed;
 import me.rhys.client.module.movement.step.Step;
+import me.rhys.client.module.player.CVE;
 import me.rhys.client.module.player.InventoryMove;
 import me.rhys.client.module.player.NoRotate;
 import me.rhys.client.module.player.pingspoof.PingSpoof;
@@ -38,7 +40,7 @@ public class Manager {
     @EventTarget
     public void initialize(InitializeEvent event) {
         event.setName("Lite");
-        event.setVersion("2.2");
+        event.setVersion("2.3");
     }
 
     @EventTarget
@@ -97,7 +99,9 @@ public class Manager {
                 new Reach("Reach", "Extend Reach", Category.GHOST, Keyboard.KEY_NONE),
                 new AutoClicker("AutoClicker", "Clicks for you", Category.GHOST, Keyboard.KEY_NONE),
                 new Scaffold("Scaffold", "Places blocks for you", Category.PLAYER, Keyboard.KEY_NONE),
-                new CustomSpeed("CustomSpeed", "Custom speed bypasses?", Category.MOVEMENT, Keyboard.KEY_NONE)
+                new CustomSpeed("CustomSpeed", "Custom speed bypasses?", Category.MOVEMENT, Keyboard.KEY_NONE),
+                new PVPBot("PvPBot", "testing", Category.COMBAT, Keyboard.KEY_NONE),
+                new CVE("CVE-2021-41618", "CVE that exploits Buzz Anticheat", Category.PLAYER, Keyboard.KEY_NONE)
         );
     }
 
