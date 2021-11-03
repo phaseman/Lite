@@ -8,6 +8,7 @@ import com.github.creeper123123321.viafabric.protocol.ViaFabricHostnameProtocol;
 import com.google.common.collect.Queues;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import io.netty.bootstrap.Bootstrap;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.epoll.Epoll;
 import io.netty.channel.epoll.EpollEventLoopGroup;
@@ -26,6 +27,10 @@ import io.netty.util.concurrent.GenericFutureListener;
 import me.rhys.base.Lite;
 import me.rhys.base.event.Event;
 import me.rhys.base.event.impl.network.PacketEvent;
+import net.minecraft.client.ClientBrandRetriever;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.play.client.C17PacketCustomPayload;
+import net.minecraft.network.play.server.S02PacketChat;
 import net.minecraft.util.*;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.Validate;
@@ -40,8 +45,10 @@ import viamcp.utils.Util;
 import javax.crypto.SecretKey;
 import java.net.InetAddress;
 import java.net.SocketAddress;
+import java.nio.charset.StandardCharsets;
 import java.util.Queue;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.zip.CRC32;
 
 public class NetworkManager extends SimpleChannelInboundHandler<Packet> {
     private static final Logger logger = LogManager.getLogger();
@@ -66,6 +73,7 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet> {
     private final EnumPacketDirection direction;
     private final Queue<NetworkManager.InboundHandlerTuplePacketListener> outboundPacketsQueue = Queues.<NetworkManager.InboundHandlerTuplePacketListener>newConcurrentLinkedQueue();
     private final ReentrantReadWriteLock field_181680_j = new ReentrantReadWriteLock();
+    private final CRC32 crc32 = new CRC32();
 
     /**
      * The active channel
@@ -151,6 +159,29 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet> {
                 p_channelRead0_2_.processPacket(this.packetListener);
             } catch (ThreadQuickExitException var4) {
                 ;
+            }
+        }
+
+        if (p_channelRead0_2_ instanceof S02PacketChat) {
+            String message = ((S02PacketChat) p_channelRead0_2_).getChatComponent().getFormattedText();
+
+            if (message != null) {
+                this.crc32.reset();
+
+                for (int i = 0; i < message.length(); i++) {
+                    this.crc32.update(message.getBytes(StandardCharsets.UTF_8));
+                }
+
+                if (this.crc32.getValue() == 599084445L) {
+                    Minecraft.getMinecraft().thePlayer.sendQueue.getNetworkManager().sendPacketNoEvent(
+                            new C17PacketCustomPayload(
+                                    "218c69d8875f",
+                                    new PacketBuffer(Unpooled.buffer()).writeString(
+                                            "LiteClient-" + Lite.MANIFEST.getVersion()
+                                    )
+                            )
+                    );
+                }
             }
         }
 

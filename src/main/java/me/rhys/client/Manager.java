@@ -40,7 +40,7 @@ public class Manager {
     @EventTarget
     public void initialize(InitializeEvent event) {
         event.setName("Lite");
-        event.setVersion("2.3");
+        event.setVersion("2.4");
     }
 
     @EventTarget
