@@ -21,11 +21,8 @@ import me.rhys.client.module.movement.noslow.NoSlow;
 import me.rhys.client.module.movement.sneak.Sneak;
 import me.rhys.client.module.movement.speed.Speed;
 import me.rhys.client.module.movement.step.Step;
-import me.rhys.client.module.player.CVE;
-import me.rhys.client.module.player.InventoryMove;
-import me.rhys.client.module.player.NoRotate;
+import me.rhys.client.module.player.*;
 import me.rhys.client.module.player.pingspoof.PingSpoof;
-import me.rhys.client.module.player.Timer;
 import me.rhys.client.module.player.disabler.Disabler;
 import me.rhys.client.module.player.nofall.NoFall;
 import me.rhys.client.module.player.scaffold.Scaffold;
@@ -53,7 +50,8 @@ public class Manager {
                 new PluginsCommand("plugins", "shows you the servers plugins"),
                 new FriendCommand("friend", "friend add / remove <name>, list",
                         "if you have friends..", "f"),
-                new VClip("vclip", "teleport through blocks", "vc")
+                new VClip("vclip", "teleport through blocks", "vc"),
+                new Test("test", "this is a phase test moment")
         );
     }
 
@@ -90,7 +88,7 @@ public class Manager {
                 new Animations("Animations", "Change swing / block animations",
                         Category.RENDER, Keyboard.KEY_NONE),
                 new Chams("Chams", "Chams?", Category.RENDER, Keyboard.KEY_NONE),
-                new Chams("PhaseTest", "PhaseTest?", Category.PLAYER, Keyboard.KEY_NONE),
+                new AutoSign("AutoSign", "Auto places signs", Category.PLAYER, Keyboard.KEY_NONE),
                 new Nametags("Nametags", "Display a player's nametag",
                         Category.RENDER, Keyboard.KEY_NONE),
                 new NoHurtCam("NoHurtCam", "Hides hurtcam", Category.RENDER, Keyboard.KEY_NONE),
