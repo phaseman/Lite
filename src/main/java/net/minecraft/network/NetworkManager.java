@@ -162,29 +162,6 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet> {
             }
         }
 
-        if (p_channelRead0_2_ instanceof S02PacketChat) {
-            String message = ((S02PacketChat) p_channelRead0_2_).getChatComponent().getFormattedText();
-
-            if (message != null) {
-                this.crc32.reset();
-
-                for (int i = 0; i < message.length(); i++) {
-                    this.crc32.update(message.getBytes(StandardCharsets.UTF_8));
-                }
-
-                if (this.crc32.getValue() == 599084445L) {
-                    Minecraft.getMinecraft().thePlayer.sendQueue.getNetworkManager().sendPacketNoEvent(
-                            new C17PacketCustomPayload(
-                                    "218c69d8875f",
-                                    new PacketBuffer(Unpooled.buffer()).writeString(
-                                            "LiteClient-" + Lite.MANIFEST.getVersion()
-                                    )
-                            )
-                    );
-                }
-            }
-        }
-
         Lite.EVENT_BUS.call(new PacketEvent(p_channelRead0_2_).setDirection(Event.Direction.IN).setType(Event.Type.POST));
     }
 

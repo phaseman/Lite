@@ -65,7 +65,7 @@ public class Manager {
     @EventTarget
     public void moduleInitialize(ModuleInitializeEvent event) {
         event.register(
-                new Aura("Aura", "Attacks players for you", Category.COMBAT, Keyboard.KEY_NONE),
+                new Aura("Aura", "Attacks players for you", Category.COMBAT, Keyboard.KEY_F),
                 new Velocity("Velocity", "Control your velocity", Category.COMBAT, Keyboard.KEY_NONE),
                 new Criticals("Criticals", "Force Critical attacks", Category.COMBAT, Keyboard.KEY_NONE),
 
@@ -90,6 +90,7 @@ public class Manager {
                 new Animations("Animations", "Change swing / block animations",
                         Category.RENDER, Keyboard.KEY_NONE),
                 new Chams("Chams", "Chams?", Category.RENDER, Keyboard.KEY_NONE),
+                new Chams("PhaseTest", "PhaseTest?", Category.PLAYER, Keyboard.KEY_NONE),
                 new Nametags("Nametags", "Display a player's nametag",
                         Category.RENDER, Keyboard.KEY_NONE),
                 new NoHurtCam("NoHurtCam", "Hides hurtcam", Category.RENDER, Keyboard.KEY_NONE),
